@@ -11,10 +11,10 @@ interface ArtistDetailsModalProps {
 
 const MODAL_MAX_HEIGHT = '80vh';
 
-const absolute = "absolute" as "absolute"
+
 
 const style = {
-  position: absolute,
+  position: "absolute",
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',

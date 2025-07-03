@@ -162,7 +162,7 @@ export default function MediaPlayer({
     fetchUserVotes();
     console.log("User ID", userID)
     console.log("User role", userRole)
-  }, [accessToken, userID, userRole, showSnackbar]);
+  }, [accessToken, userID, userRole]);
 
 
 
