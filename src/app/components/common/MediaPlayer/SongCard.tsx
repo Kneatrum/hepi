@@ -89,7 +89,7 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
     severity: 'success' 
   });
   const { accessToken } = useSession();
-  const router = useRouter();
+  // const router = useRouter();
   const [userID, setUserID] = useState<number | null>(null);
   const [editSongDialogOpen, setEditSongDialogOpen] = useState(false);
 
@@ -100,7 +100,7 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
       return;
     }
 
-    let userID = getUserId(accessToken);
+    const userID = getUserId(accessToken);
     setUserID(userID);
   }, [accessToken]);
 
@@ -183,7 +183,7 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
   };
 
   const handleShare = (songId: number, title: string): void => {
-    const shareUrl = `https://musicapp.com/song/${songId}?ref=${Math.random().toString(36).substring(7)}`;
+    const shareUrl = `https://musicapp.com/song/${songId}/${title}?ref=${Math.random().toString(36).substring(7)}`;
     
     navigator.clipboard.writeText(shareUrl).then(() => {
       showNotification('Share URL copied to clipboard!', 'success');

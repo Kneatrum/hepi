@@ -8,10 +8,10 @@ export interface VotesState {
 export interface Vote {
   id: number;
   voteType: VoteType;
-  user: any; // You can define a proper User interface if needed
+  user: string; // You can define a proper User interface if needed
   song: {
     songId: number;
-    [key: string]: any;
+    [key: string]: string | number;
   };
 }
 
@@ -25,7 +25,7 @@ export interface ApiResponse {
     pageable: {
       pageNumber: number;
       pageSize: number;
-      sort: any;
+      sort: string;
       offset: number;
       paged: boolean;
       unpaged: boolean;
@@ -35,7 +35,7 @@ export interface ApiResponse {
     totalElements: number;
     size: number;
     number: number;
-    sort: any;
+    sort: string;
     first: boolean;
     numberOfElements: number;
     empty: boolean;

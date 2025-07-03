@@ -1,13 +1,13 @@
 "use client";
 import { useState, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import styles from "../../../styles/page.module.css";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import CustomField from "../CustomFields/CustomField";
 import SubmitButton from "../CustomButtons/SubmitButton";
 import { useSession } from "@/app/context/SessionContext";
-import CustomTextareaField from "../CustomFields/CustomTextAreaField";
+// import CustomTextareaField from "../CustomFields/CustomTextAreaField";
 
 interface FormData {
   permissionName: string;

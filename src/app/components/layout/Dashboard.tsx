@@ -1,5 +1,5 @@
 import styles from "../../styles/page.module.css"
-import { Box, Card, CardContent, Container } from '@mui/material';
+import { Box } from '@mui/material';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import UserSidebar from "./UserSidebar";

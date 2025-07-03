@@ -18,10 +18,10 @@ import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
 import Spinner from "@/app/components/common/spinners/loading";
 import InfoCard from "@/app/components/common/ui/InfoCard";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useRouter } from "next/navigation";
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+// import { useRouter } from "next/navigation";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getAllUsers, FormattedUser } from "@/app/utils/fetchUsersUtils";
+// import { getAllUsers, FormattedUser } from "@/app/utils/fetchUsersUtils";
 import { useSession } from "@/app/context/SessionContext";
 import  TribeEditDialog from "@/app/components/common/ui/TribeEditDialog";
 import { Tribe } from "@/app/types";
@@ -99,7 +99,7 @@ export default function Page() {
   const [tribes, setTribes] = useState<Tribe[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const { accessToken } = useSession();
+  // const { accessToken } = useSession();
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedTribe, setSelectedTribe] = useState<Tribe | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -133,8 +133,8 @@ export default function Page() {
 //     router.push("/admin/artists/create");
 //   };
 
-const handleTribeDialogSuccess = (newTribe: any) => {
-  console.log('New Tribe created:', newTribe);
+const handleTribeDialogSuccess = () => {
+  console.log('New Tribe created');
   // Handle success (e.g., refresh list, show notification)
 };
 

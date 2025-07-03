@@ -33,7 +33,7 @@ interface RawUser {
   userPhoneNumber: string;
   country: string | null;
   role: Role;
-  forgotPassword: null | any; // Type according to actual data
+  forgotPassword: boolean | null; // Type according to actual data
   enabled: boolean;
   accountNonExpired: boolean;
   accountNonLocked: boolean;
@@ -74,7 +74,7 @@ export interface FormattedUser {
   roleShortDesc: string;
   roleDescription: string;
   roleStatus: string;
-  forgotPassword: any | null;
+  forgotPassword: boolean | null;
   accountEnabled: boolean;
   accountNotExpired: boolean;
   accountNotLocked: boolean;

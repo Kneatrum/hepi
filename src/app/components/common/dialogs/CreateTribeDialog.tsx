@@ -17,6 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CustomField from "../CustomFields/CustomField";
 import SubmitButton from "../CustomButtons/SubmitButton";
 import { useSession } from "@/app/context/SessionContext";
+import { Tribe } from "@/app/types";
 
 
 const darkYellowTheme = createTheme({
@@ -138,7 +139,7 @@ interface TribeFormData {
 interface CreateTribeDialogProps {
   open: boolean;
   onClose: () => void;
-  onSuccess?: (tribe: any) => void;
+  onSuccess?: (tribe: Tribe) => void;
 }
 
 export default function CreateTribeDialog({ 
@@ -147,7 +148,7 @@ export default function CreateTribeDialog({
   onSuccess 
 }: CreateTribeDialogProps) {
   const { accessToken } = useSession();
-  const router = useRouter();
+  // const router = useRouter();
 
   const [formData, setFormData] = useState<TribeFormData>({
     id: 0,

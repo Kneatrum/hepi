@@ -7,8 +7,8 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import SongActions from "./SongActions";
-import SongCard from "./SongCard";
+// import SongActions from "./SongActions";
+// import SongCard from "./SongCard";
 
 
 // Song List Component
@@ -38,11 +38,11 @@ export default function SongList({ songs, currentSongIndex, onSongSelect, onLike
     }
   };
 
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  // const formatDuration = (seconds: number) => {
+  //   const mins = Math.floor(seconds / 60);
+  //   const secs = seconds % 60;
+  //   return `${mins}:${secs.toString().padStart(2, '0')}`;
+  // };
 
   if (songs.length === 0) {
     return (

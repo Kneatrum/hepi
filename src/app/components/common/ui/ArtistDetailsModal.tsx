@@ -1,6 +1,6 @@
 "use client";
 import { Artist } from '../../../types';
-import { Modal, Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 interface ArtistDetailsModalProps {

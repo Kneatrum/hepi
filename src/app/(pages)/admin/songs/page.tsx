@@ -32,7 +32,7 @@ export default function Page() {
   const [userID, setUserID] = useState<number | null>(null);
   const { accessToken } = useSession();
   const [userRole, setUserRole] = useState<string | null>(null);
-
+  const router = useRouter();
 
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function Page() {
     setUserID(userID);
     setUserRole(userRole);
 
-  }, [accessToken]);
+  }, [accessToken, router]);
 
 
 
@@ -91,7 +91,7 @@ export default function Page() {
       };
   
       fetchVotes();
-    }, [votesApiUrl, accessToken]);
+    }, [votesApiUrl, accessToken, router]);
   
 
 
@@ -136,10 +136,10 @@ export default function Page() {
     }
   
     fetchSongs();
-  }, [accessToken]);
+  }, [accessToken, router]);
 
 
-  const router = useRouter();
+  
   const handleBackToArtistsClick = () => {
     router.push("/admin/songs/create");
   };

@@ -1,3 +1,4 @@
+import { SyntheticEvent } from "react";
 import { Box, TextField, Autocomplete } from "@mui/material";
 import styles from "../../../styles/page.module.css";
 
@@ -6,7 +7,7 @@ interface CustomAutocompleteProps<T> {
   placeholder?: string;
   options: T[];
   value: T | null;
-  onChange: (event: any, newValue: T | string | null) => void;
+  onChange: (event: SyntheticEvent, newValue: T | string | null) => void;
   getOptionLabel: (option: T | string) => string;
   freeSolo?: boolean;
 }

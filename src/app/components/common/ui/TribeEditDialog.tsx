@@ -149,14 +149,14 @@ const TribeEditDialog: React.FC<TribeEditDialogProps> = ({
   open,
   onClose,
   tribe,
-  tribes,
-  setTribes,
+  // tribes,
+  // setTribes,
   onSuccess,
 }) => {
 //   const [tribes, setExistingTribes] = useState<Artist[]>([]);
 //   const [existingGenres, setExistingGenres] = useState<Genre[]>([]);
 //   const [tribe, setSelectedTribe] = useState<Artist | null>(null);
-  const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
+  // const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
   const [loading, setLoading] = useState(false);
   // Initialize formData with empty values, it will be populated by useEffect
   const [formData, setFormData] = useState<TribeFormData>({
@@ -302,11 +302,11 @@ const TribeEditDialog: React.FC<TribeEditDialogProps> = ({
     }
   };
 
-  const TabPanel = ({ children, value, index }: { children: React.ReactNode; value: number; index: number }) => (
-    <div hidden={value !== index}>
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
+  // const TabPanel = ({ children, value, index }: { children: React.ReactNode; value: number; index: number }) => (
+  //   <div hidden={value !== index}>
+  //     {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+  //   </div>
+  // );
 
   return (
     <ThemeProvider theme={darkYellowTheme}>

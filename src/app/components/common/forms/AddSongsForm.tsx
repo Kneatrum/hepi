@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect, SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import styles from "../../../styles/page.module.css";
 import { Box, Card, CardContent, Typography } from "@mui/material";
@@ -18,7 +18,7 @@ interface SongFormData {
   genreId: number;
 }
 
-export default function CreateArtistForm() {
+export default function AddSongsForm() {
   const { accessToken } = useSession();
   const router = useRouter();
 
@@ -85,7 +85,7 @@ export default function CreateArtistForm() {
   };
 
   // Handle artist selection
-  const handleArtistChange = (event: any, newValue: Artist | string | null) => {
+  const handleArtistChange = ( newValue: Artist | string | null) => {
     if (typeof newValue === 'string') {
       // User typed a custom value - you might want to handle this differently
       setSelectedArtist(null);
@@ -102,7 +102,7 @@ export default function CreateArtistForm() {
   };
 
   // Handle genre selection
-  const handleGenreChange = (event: any, newValue: Genre | string | null) => {
+  const handleGenreChange = ( newValue: Genre | string | null) => {
     if (typeof newValue === 'string') {
       // User typed a custom value - you might want to handle this differently
       setSelectedGenre(null);

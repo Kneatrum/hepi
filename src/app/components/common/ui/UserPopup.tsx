@@ -11,7 +11,7 @@ import {
   Chip,
   IconButton,
   Paper,
-  Grid,
+  // Grid,
   ThemeProvider,
   createTheme,
 } from '@mui/material';
@@ -37,7 +37,7 @@ interface FormattedUser {
   roleShortDesc: string;
   roleDescription: string;
   roleStatus: string;
-  forgotPassword: any | null;
+  forgotPassword: boolean | null;
   accountEnabled: boolean;
   accountNotExpired: boolean;
   accountNotLocked: boolean;

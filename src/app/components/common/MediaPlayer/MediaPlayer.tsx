@@ -75,14 +75,14 @@ export default function MediaPlayer({
 
 
 
-  type User = {
-    id: number;
-    email: string;
-  };
+  // type User = {
+  //   id: number;
+  //   email: string;
+  // };
 
-  type QueryResult = {
-    content: User[];
-  };
+  // type QueryResult = {
+  //   content: User[];
+  // };
 
 
 
@@ -152,16 +152,17 @@ export default function MediaPlayer({
         setUpVotedSongs(upVotes);
         setDownVotedSongs(downVotes);
         showSnackbar("Vote data loaded.", "success");
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error loading votes:", err);
-        showSnackbar(`Failed to load votes: ${err.message}`, "error");
+        const message = err instanceof Error ? err.message : "An unknown error occurred";
+        showSnackbar(`Failed to load votes: ${message}`, "error");
       }
     };
 
     fetchUserVotes();
     console.log("User ID", userID)
     console.log("User role", userRole)
-  }, [accessToken]);
+  }, [accessToken, userID, userRole, showSnackbar]);
 
 
 
@@ -204,9 +205,10 @@ export default function MediaPlayer({
 
     setUpVotedSongs(newUpVotes);
     setDownVotedSongs(newDownVotes);
-  } catch (error: any) {
-    showSnackbar(`Error: ${error.message}`, "error");
+  } catch (error) {
     console.error("Upvote error:", error);
+    const message = error instanceof Error ? error.message : "An unknown error occurred";
+    showSnackbar(`Error: ${message}`, "error");
   }
 };
 
@@ -311,7 +313,7 @@ const interactWithSong = async (songId: number, type: string) => {
         audioRef.current.play().catch(console.error);
       }
     }
-  }, [currentSongIndex, currentAudioUrl]);
+  }, [currentSongIndex, currentAudioUrl, isPlaying, volume]);
 
 
 
@@ -431,7 +433,8 @@ const interactWithSong = async (songId: number, type: string) => {
     isRepeating, 
     currentSong, 
     duration, // Add duration as a dependency, as it's used in handleTimeUpdate
-    hasLoggedTargetPlayback // Add to re-define handleTimeUpdate if this state changes, ensuring it captures the latest value
+    hasLoggedTargetPlayback, // Add to re-define handleTimeUpdate if this state changes, ensuring it captures the latest value
+    monitorPlaybackDurationTarget,
   ]);
 
 

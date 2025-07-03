@@ -14,7 +14,7 @@ import {
   Typography 
 } from "@mui/material";
 
-import Image from "next/image";
+
 import { Artist } from "@/app/types";
 import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
@@ -126,8 +126,8 @@ export default function Page() {
       router.push("/admin/artists/create");
     };
 
-  const handleArtistDialogSuccess = (newArtist: any) => {
-    console.log('New artist created:', newArtist);
+  const handleArtistDialogSuccess = () => {
+    console.log('New artist created');
     // Handle success (e.g., refresh list, show notification)
   };
   

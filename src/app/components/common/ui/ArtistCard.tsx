@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Button, Box, Avatar } from '@mui/material';
+import { Card, CardContent, Typography, Button, Box, Avatar } from '@mui/material';
 import { Artist } from '../../../types';
 import ArtistDetailsModal from './ArtistDetailsModal';
 

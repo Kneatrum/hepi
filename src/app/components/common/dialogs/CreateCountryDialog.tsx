@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
     Dialog,
@@ -138,7 +138,7 @@ interface CountryFormData {
 interface CreateCountryDialogProps {
   open: boolean;
   onClose: () => void;
-  onSuccess?: (country: any) => void;
+  onSuccess?: (country: SyntheticEvent) => void;
 }
 
 export default function CreateCountryDialog({ 
@@ -147,7 +147,7 @@ export default function CreateCountryDialog({
   onSuccess 
 }: CreateCountryDialogProps) {
   const { accessToken } = useSession();
-  const router = useRouter();
+  // const router = useRouter();
 
   const [formData, setFormData] = useState<CountryFormData>({
     name: "",

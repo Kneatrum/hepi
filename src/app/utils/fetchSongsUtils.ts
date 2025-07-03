@@ -165,7 +165,7 @@ export async function fetchAllSongsParallel(
   const { 
     baseUrl, 
     maxConcurrentRequests = 5,
-    pageSize = 20 
+    // pageSize = 20 
   } = options;
 
   try {

@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import styles from "../../../styles/page.module.css";
 import { 
   Box, 
-  Button, 
-  Link, 
+  // Button, 
+  // Link, 
   Typography, 
   Chip, 
   Table, 
@@ -127,10 +127,10 @@ export default function Page() {
     
   }, [accessToken]);
 
-  const router = useRouter();
-  const handleBackToArtistsClick = () => {
-    router.push("/admin/artists/create");
-  };
+  // const router = useRouter();
+  // const handleBackToArtistsClick = () => {
+  //   router.push("/admin/artists/create");
+  // };
 
   const filteredUsers = users.filter((user) =>
     user.firstname.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -188,9 +188,9 @@ interface ArtistFormData {
 const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
   open,
   onClose,
-  artists,
+  // artists,
   artist,
-  setArtists,
+  // setArtists,
   onSuccess,
 }) => {
 //   const [tribes, setExistingTribes] = useState<Artist[]>([]);
@@ -215,7 +215,7 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
   const [selectedCountry, setSelectedCountry] = useState<SimplifiedCountry | null>(null);
   const [selectedTribe, setSelectedTribe] = useState<Tribe | null>(null);
   const { accessToken } = useSession();
-  const [ editMode , setEditMode ] = useState<boolean>(false);
+  // const [ editMode , setEditMode ] = useState<boolean>(false);
 
 
 
@@ -292,7 +292,7 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
 
 
   // Handle artist selection
-  const handleCountryChange = (event: any, newValue: Country | string | null) => {
+  const handleCountryChange = ( newValue: Country | string | null) => {
     if (typeof newValue === 'string') {
       // User typed a custom value - you might want to handle this differently
       setSelectedCountry(null);
@@ -309,7 +309,7 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
   };
 
   // Handle genre selection
-  const handleTribeChange = (event: any, newValue: Tribe | string | null) => {
+  const handleTribeChange = ( newValue: Tribe | string | null) => {
     if (typeof newValue === 'string') {
       // User typed a custom value - you might want to handle this differently
       setSelectedTribe(null);
@@ -357,11 +357,11 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
     }
   };
 
-  const TabPanel = ({ children, value, index }: { children: React.ReactNode; value: number; index: number }) => (
-    <div hidden={value !== index}>
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
+  // const TabPanel = ({ children, value, index }: { children: React.ReactNode; value: number; index: number }) => (
+  //   <div hidden={value !== index}>
+  //     {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+  //   </div>
+  // );
 
   return (
     <ThemeProvider theme={darkYellowTheme}>

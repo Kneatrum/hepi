@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
-import CustomAutocomplete from "../CustomFields/CustomAutocomplete";
+// import CustomAutocomplete from "../CustomFields/CustomAutocomplete";
 import {  Genre } from "@/app/types";
 import { useSession } from "@/app/context/SessionContext";
 
@@ -149,9 +149,9 @@ const darkYellowTheme = createTheme({
 const GenreEditDialog: React.FC<GenreEditDialogProps> = ({
   open,
   onClose,
-  genres,
+  // genres,
   genre,
-  setGenres,
+  // setGenres,
   onSuccess,
 }) => {
 //   const [tribes, setExistingTribes] = useState<Artist[]>([]);
@@ -228,11 +228,11 @@ const GenreEditDialog: React.FC<GenreEditDialogProps> = ({
     }
   };
 
-  const TabPanel = ({ children, value, index }: { children: React.ReactNode; value: number; index: number }) => (
-    <div hidden={value !== index}>
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
+  // const TabPanel = ({ children, value, index }: { children: React.ReactNode; value: number; index: number }) => (
+  //   <div hidden={value !== index}>
+  //     {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+  //   </div>
+  // );
 
   return (
     <ThemeProvider theme={darkYellowTheme}>

@@ -1,5 +1,5 @@
 "use client";
-import { List, ListItem, ListItemText, ListItemIcon, Box } from "@mui/material";
+import { List, ListItem, ListItemText, ListItemIcon } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";

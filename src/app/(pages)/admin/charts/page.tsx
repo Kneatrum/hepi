@@ -102,7 +102,7 @@ export default function SongAnalyticsPage() {
     fetchSongs();
   }, []);
 
-  const router = useRouter();
+  
 
   const getAnalyticsCategories = (): AnalyticsCategory[] => {
     return [
@@ -149,10 +149,10 @@ export default function SongAnalyticsPage() {
     ];
   };
 
-  const filteredSongs = songs.filter((song) =>
-    song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredSongs = songs.filter((song) =>
+  //   song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //   song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
   const formatNumber = (num: number): string => {
     if (num >= 1000000) {

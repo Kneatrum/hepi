@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import CustomSearchField from "./components/common/CustomFields/CustomSearchField";
 import Dashboard from "./components/layout/Dashboard";
 import styles from "./styles/page.module.css";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import MediaPlayer from "./components/common/MediaPlayer/MediaPlayer";
 import InfoCard from "./components/common/ui/InfoCard";
 import Spinner from "./components/common/spinners/loading";
@@ -77,7 +77,7 @@ export default function Page() {
     }
   
     fetchSongs();
-  }, [songsApiUrl, accessToken]);
+  }, [ accessToken]);
 
 
 
@@ -120,7 +120,7 @@ export default function Page() {
       };
   
       fetchVotes();
-    }, [votesApiUrl, accessToken]);
+    }, [votesApiUrl, accessToken, router]);
 
 
 
@@ -132,8 +132,8 @@ export default function Page() {
       return;
     }
 
-    let userID = getUserId(accessToken);
-    let userRole = getUserRole(accessToken);
+    const userID = getUserId(accessToken);
+    const userRole = getUserRole(accessToken);
 
     setUserID(userID);
     setUserRole(userRole);

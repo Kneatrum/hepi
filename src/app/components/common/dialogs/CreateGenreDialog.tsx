@@ -17,6 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CustomField from "../CustomFields/CustomField";
 import SubmitButton from "../CustomButtons/SubmitButton";
 import { useSession } from "@/app/context/SessionContext";
+import { Country } from "@/app/types";
 
 
 const darkYellowTheme = createTheme({
@@ -138,7 +139,7 @@ interface GenreFormData {
 interface CreateGenreDialogProps {
   open: boolean;
   onClose: () => void;
-  onSuccess?: (country: any) => void;
+  onSuccess?: (country: Country) => void;
 }
 
 export default function CreateCountryDialog({ 
@@ -147,7 +148,7 @@ export default function CreateCountryDialog({
   onSuccess 
 }: CreateGenreDialogProps) {
   const { accessToken } = useSession();
-  const router = useRouter();
+  // const router = useRouter();
 
   const [formData, setFormData] = useState<GenreFormData>({
     name: "",

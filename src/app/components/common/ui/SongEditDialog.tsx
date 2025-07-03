@@ -251,7 +251,7 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
   };
 
   // Handle artist selection
-  const handleArtistChange = (event: any, newValue: Artist | string | null) => {
+  const handleArtistChange = ( newValue: Artist | string | null) => {
     if (typeof newValue === 'string') {
       // User typed a custom value - you might want to handle this differently
       setSelectedArtist(null);
@@ -268,7 +268,7 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
   };
 
  // Handle genre selection
-  const handleGenreChange = (event: any, newValue: Genre | string | null) => {
+  const handleGenreChange = ( newValue: Genre | string | null) => {
     if (typeof newValue === 'string') {
       // User typed a custom value - you might want to handle this differently
       setSelectedGenre(null);
@@ -314,11 +314,11 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
     }
   };
 
-  const TabPanel = ({ children, value, index }: { children: React.ReactNode; value: number; index: number }) => (
-    <div hidden={value !== index}>
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
+  // const TabPanel = ({ children, value, index }: { children: React.ReactNode; value: number; index: number }) => (
+  //   <div hidden={value !== index}>
+  //     {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+  //   </div>
+  // );
 
   return (
     <ThemeProvider theme={darkYellowTheme}>

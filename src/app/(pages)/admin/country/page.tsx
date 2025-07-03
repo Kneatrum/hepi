@@ -18,8 +18,8 @@ import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
 import Spinner from "@/app/components/common/spinners/loading";
 import InfoCard from "@/app/components/common/ui/InfoCard";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useRouter } from "next/navigation";
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+// import { useRouter } from "next/navigation";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSession } from "@/app/context/SessionContext";
 import  CountryEditDialog from "@/app/components/common/ui/CountryEditDialog";
@@ -98,7 +98,7 @@ export default function Page() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const { accessToken } = useSession();
+  // const { accessToken } = useSession();
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -127,8 +127,8 @@ export default function Page() {
   }, []);
 
 
-  const handleCountryDialogSuccess = (newArtist: any) => {
-    console.log('New artist created:', newArtist);
+  const handleCountryDialogSuccess = () => {
+    console.log('New artist created');
     // Handle success (e.g., refresh list, show notification)
   };
 

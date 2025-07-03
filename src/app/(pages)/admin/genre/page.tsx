@@ -17,8 +17,8 @@ import { useEffect, useState } from "react";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
 import Spinner from "@/app/components/common/spinners/loading";
 import InfoCard from "@/app/components/common/ui/InfoCard";
-import { useRouter } from "next/navigation";
-import { useSession } from "@/app/context/SessionContext";
+// import { useRouter } from "next/navigation";
+// import { useSession } from "@/app/context/SessionContext";
 
 import CreateGenreDialog from "@/app/components/common/dialogs/CreateGenreDialog";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -127,8 +127,8 @@ export default function Page() {
 
 
 
-  const handleGenreDialogSuccess = (newGenre: any) => {
-    console.log('New genre created:', newGenre);
+  const handleGenreDialogSuccess = () => {
+    console.log('New genre created');
     // Handle success (e.g., refresh list, show notification)
   };
 

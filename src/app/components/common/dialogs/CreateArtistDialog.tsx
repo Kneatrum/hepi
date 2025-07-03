@@ -1,7 +1,7 @@
 "use client";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, SyntheticEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import styles from "../../../styles/page.module.css";
+// import styles from "../../../styles/page.module.css";
 import { Dialog,
     DialogTitle,
     DialogContent,
@@ -19,7 +19,6 @@ import { useSession } from "@/app/context/SessionContext";
 import CloseIcon from "@mui/icons-material/Close";
 import CustomAutocomplete from "../CustomFields/CustomAutocomplete";
 import { Country, Tribe } from "@/app/types";
-import { useEffect } from "react";
 
 const darkYellowTheme = createTheme({
   palette: {
@@ -144,7 +143,7 @@ interface ArtistFormData {
 interface CreateArtistDialogProps {
   open: boolean;
   onClose: () => void;
-  onSuccess?: (tribe: any) => void;
+  onSuccess?: (artist: ArtistFormData) => void;
 }
 
 export default function CreateArtistDialog({
@@ -209,7 +208,7 @@ export default function CreateArtistDialog({
 
 
      // Handle artist selection
-      const handleCountryChange = (event: any, newValue: Country | string | null) => {
+      const handleCountryChange = (event: SyntheticEvent, newValue: Country | string | null) => {
         if (typeof newValue === 'string') {
           setSelectedCountry(null);
           setArtistFormData({ ...formData, countryId: 0 });
@@ -223,7 +222,7 @@ export default function CreateArtistDialog({
       };
     
      // Handle genre selection
-      const handleTribeChange = (event: any, newValue: Tribe | string | null) => {
+      const handleTribeChange = (event: SyntheticEvent, newValue: Tribe | string | null) => {
         if (typeof newValue === 'string') {
           setSelectedTribe(null);
           setArtistFormData({ ...formData, tribeId: 0 });
@@ -263,38 +262,40 @@ export default function CreateArtistDialog({
     const handleSubmit = async () => {
         setError("");
         setSuccess("");
+        setIsSubmitting(true);
 
         if (!formData.name || !formData.biography || !formData.countryId || !formData.tribeId || !formData.thumbnailUrl) {
-        setError("Please fill all required fields.");
-        return;
+            setError("Please fill all required fields.");
+            setIsSubmitting(false);
+            return;
         }
 
         try {
             const response = await fetch(
                 "https://music-backend-production-99a.up.railway.app/api/v1/artists",
                 {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: accessToken ? `Bearer ${accessToken}` : "",
-                },
-                body: JSON.stringify(formData),
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: accessToken ? `Bearer ${accessToken}` : "",
+                    },
+                    body: JSON.stringify(formData),
                 }
             );
-            console.log("response>>>",response)
             const data = await response.json();
 
             if (response.ok) {
                 setSuccess("Artist successfully created!");
-                setTimeout(() => {
-                router.push("/admin");
-                }, 1000);
+                if (onSuccess) onSuccess(data);
+                setTimeout(() => onClose(), 1500);
             } else {
                 setError(data.message || "Artist creation failed.");
             }
         } catch (err) {
             console.error("Error:", err);
             setError("Network error. Please try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -315,7 +316,7 @@ export default function CreateArtistDialog({
         
             <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center'}}>
             <Typography variant="h6" component="div">
-            Add Tribe
+            Add Artist
             </Typography>
             <IconButton
                 aria-label="close"
@@ -351,13 +352,6 @@ export default function CreateArtistDialog({
                         type="url"
                         value={formData.thumbnailUrl}
                         onChange={handleChange("thumbnailUrl")}
-                    />
-                    <CustomField
-                        label="Country ID"
-                        placeholder="Country ID (e.g., 1)"
-                        type="text"
-                        value={"formData.countryId"}
-                        onChange={handleChange("countryId")}
                     />
 
                     <CustomAutocomplete
@@ -396,6 +390,20 @@ export default function CreateArtistDialog({
                     )}
                 </Box>
             </DialogContent>
+            <DialogActions sx={{ borderTop: '1px solid #333', p: 3,  display: 'flex', justifyContent: 'space-between' }}>
+                <Button 
+                    variant="outlined"
+                    onClick={handleClose} 
+                    disabled={isSubmitting}
+                >
+                    Cancel
+                </Button>
+                <SubmitButton 
+                    label={isSubmitting ? "Submitting..." : "Submit Artist"}
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                />
+            </DialogActions>
             </Dialog>
         </ThemeProvider>
     );
