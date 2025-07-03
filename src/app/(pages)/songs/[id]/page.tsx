@@ -192,7 +192,7 @@ export default function Page() {
                 </Card>
               </Grid>
             </Grid>
-            <MediaPlayer song={song} />
+            {/* <MediaPlayer song={song} /> */}
           </>
         )}
         
