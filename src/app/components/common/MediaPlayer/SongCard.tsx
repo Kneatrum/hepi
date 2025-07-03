@@ -31,7 +31,7 @@ import SongEditDialog from '../ui/SongEditDialog';
 
 import { ParsedSong } from '@/app/utils/fetchSongsUtils';
 import { useSession } from "@/app/context/SessionContext";
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { VotesState } from '@/app/utils/fetchVotesUtils';
 import { getUserId } from "@/app/utils/authUtils";
 

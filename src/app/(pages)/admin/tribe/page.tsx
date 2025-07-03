@@ -22,7 +22,7 @@ import InfoCard from "@/app/components/common/ui/InfoCard";
 // import { useRouter } from "next/navigation";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 // import { getAllUsers, FormattedUser } from "@/app/utils/fetchUsersUtils";
-import { useSession } from "@/app/context/SessionContext";
+// import { useSession } from "@/app/context/SessionContext";
 import  TribeEditDialog from "@/app/components/common/ui/TribeEditDialog";
 import { Tribe } from "@/app/types";
 import CreateTribeDialog from "@/app/components/common/dialogs/CreateTribeDialog";

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
-import { Typography, List, ListItem, ListItemIcon, ListItemText, Box, Button } from "@mui/material";
+import { Typography, Box, Button } from "@mui/material";
 import styles from "../../../styles/page.module.css";
 import InfoCard from "@/app/components/common/ui/InfoCard";
 import { useRouter } from "next/navigation";
@@ -42,8 +42,8 @@ export default function Page() {
       return;
     }
 
-    let userID = getUserId(accessToken);
-    let userRole = getUserRole(accessToken);
+    const userID = getUserId(accessToken);
+    const userRole = getUserRole(accessToken);
 
     setUserID(userID);
     setUserRole(userRole);

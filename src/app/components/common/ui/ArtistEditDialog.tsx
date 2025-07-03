@@ -40,11 +40,11 @@ interface CountryApiResponse {
   last: boolean;
   size: number;
   number: number;
-  sort: Record<string, any>;
+  sort: string;
   numberOfElements: number;
   first: boolean;
   empty: boolean;
-  pageable: Record<string, any>;
+  pageable: string;
 }
 
 // Define the type for the simplified output

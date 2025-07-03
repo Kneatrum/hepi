@@ -15,7 +15,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 // import CustomAutocomplete from "../CustomFields/CustomAutocomplete";
-import { Genre, Tribe } from "@/app/types";
+import { Tribe } from "@/app/types";
 import { useSession } from "@/app/context/SessionContext";
 
 

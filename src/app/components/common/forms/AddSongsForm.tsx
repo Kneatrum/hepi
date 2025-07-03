@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, useEffect, SyntheticEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "../../../styles/page.module.css";
 import { Box, Card, CardContent, Typography } from "@mui/material";

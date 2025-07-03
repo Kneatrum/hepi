@@ -152,7 +152,7 @@ export default function CreateArtistDialog({
     onSuccess,
 }: CreateArtistDialogProps ) {
     const { accessToken } = useSession();
-    const router = useRouter();
+    // const router = useRouter();
 
     const [formData, setArtistFormData] = useState<ArtistFormData>({
         id: 0,

@@ -37,7 +37,7 @@ const ResponsiveAppBar = () => {
       return;
     }
 
-    let role = getUserRole(token);
+    const role = getUserRole(token);
 
     if (role === "SUPERADMIN") {
       setIsAdmin(true);

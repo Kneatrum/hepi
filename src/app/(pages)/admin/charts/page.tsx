@@ -15,7 +15,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CommentIcon from '@mui/icons-material/Comment';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 // Updated Song interface to match API response
 interface Song {
