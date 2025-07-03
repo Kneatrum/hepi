@@ -1,0 +1,609 @@
+.page {
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  align-items: center;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 80px;
+  gap: 64px;
+  font-family: var(--font-outfit);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    --gray-rgb: 255, 255, 255;
+    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
+    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+
+    --button-primary-hover: #ccc;
+    --button-secondary-hover: #1a1a1a;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  grid-row-start: 2;
+}
+
+.main ol {
+  font-family: var(--font-geist-mono);
+  padding-left: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  list-style-position: inside;
+}
+
+.main li:not(:last-of-type) {
+  margin-bottom: 8px;
+}
+
+.main code {
+  font-family: inherit;
+  background: var(--gray-alpha-100);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.ctas {
+  display: flex;
+  gap: 16px;
+}
+
+.ctas a {
+  appearance: none;
+  border-radius: 128px;
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+a.primary {
+  background: var(--foreground);
+  color: var(--background);
+  gap: 8px;
+}
+
+a.secondary {
+  border-color: var(--gray-alpha-200);
+  min-width: 158px;
+}
+
+.footer {
+  grid-row-start: 3;
+  display: flex;
+  gap: 24px;
+}
+
+.footer a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer img {
+  flex-shrink: 0;
+}
+
+.appBar {
+  background-color: #000 !important;
+  border-bottom: 0.1px solid #fff !important;
+}
+
+
+.navbar {
+  background-color: #000 !important;
+}
+
+.navbarLogo {
+  font-family: var(--font-outfit) !important;
+  margin-right: 2;
+  font-weight: 700 !important;
+  font-size: 25px !important; 
+  letter-spacing: .3rem;
+  color: #fff;
+  text-decoration: none;
+  /* display: flex; */
+  flex-grow: 1;
+}
+
+.navbarLinksText {
+  font-family: var(--font-outfit) !important;
+  margin-right: 2;
+  font-weight: 500 !important;
+  font-size: 15px !important; 
+  letter-spacing: .3rem;
+  color: #fff;
+  text-decoration: none !important;
+  text-transform: none !important; 
+  display: flex;
+}
+
+
+/* Logo styles */
+.logo {
+  font-family: 'monospace';
+  font-weight: 700;
+  letter-spacing: 0.3rem;
+  color: white;
+  text-decoration: none;
+}
+
+.logoDesktop {
+  display: flex;
+}
+
+.logoMobile {
+  flex-grow: 1;
+}
+
+/* Navigation Pages */
+.navPages {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.navButton {
+  color: white !important;
+  font-size: 16px;
+  margin-left: 10px;
+  text-transform: uppercase;
+}
+
+.navButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* User settings */
+.userSettings {
+  display: flex;
+  align-items: center;
+}
+
+.userAvatar {
+  padding: 0;
+}
+
+/* Menu Items */
+.menuItem {
+  text-align: center;
+  font-size: 16px;
+}
+
+
+
+.dashboard {
+  /* padding: 100px 40px; */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  overflow: hidden; 
+}
+
+.authBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.authCard {
+border: 1px solid var(--borderColor1);
+  background-color: inherit !important;
+  min-width: 450px;
+  height: auto;
+  border-radius: 12px !important;
+}
+
+.authCardContent {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  align-items: center;
+  box-shadow: none;
+  color: #fff;
+  gap: 20px;
+}
+
+
+.authCardTopImage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: auto;
+}
+
+.authCardInputBox {
+  display: flex;
+  flex-direction: column;
+  gap: 25px !important; 
+  height: auto;
+  width: 100%;
+  padding:10px
+}
+
+.customFieldBox {
+  width: 100%;
+  height: 44px;
+}
+
+.customTextField {
+  width: 100%;
+  font-family: var(--font-outfit) !important;
+  border-radius: 12px !important; 
+}
+
+.customTextField input {
+  color: #fff !important;
+  font-family: var(--font-outfit) !important;
+}
+
+.customTextField ::placeholder {
+  color: red !important;
+  font-family: var(--font-outfit) !important;
+}
+
+
+.customButton {
+  border-radius: 8px !important;
+  width: 100% !important;
+  text-transform: none !important;
+  height: 44px !important;
+  background-color: var(--yellow1) !important;
+}
+
+.buttonFont {
+  font-family: var(--font-outfit) !important;
+}
+
+.buttonDark {
+  color: #000;
+}
+
+.buttonWhite {
+  color: #fff;
+}
+
+
+.pageNotFoundFontH1 {
+  font-family: var(--font-outfit) !important;
+  color: var(--yellow1) !important;
+  font-size: 50px !important;
+}
+
+.pageNotFoundFontH2 {
+  font-family: var(--font-outfit) !important;
+  color: var(--yellow1) !important ;
+  font-size: 20px !important;
+}
+
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* border: 1px solid yellow; */
+  min-height: 60vh;
+}
+
+.layer {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* border: 1px solid green; */
+}
+
+.layerTop {
+  /* border: 1px solid green; */
+  min-height: 50px;
+}
+
+.layerTopIntroText {
+  font-family: var(--font-outfit) !important;
+  color:#fff !important ;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+}
+
+.layerTopIntroTextInfo {
+  font-family: var(--font-outfit) !important;
+  color:#fff !important ;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+
+}
+
+.songCard{
+  /* border: 1px solid red; */
+  text-align: left;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: auto;
+}
+
+.gridContainer {
+  flex-grow: 1; /* This pushes the footer down */
+}
+
+.mediaPlayer {
+  width: 100%;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.8); /* Dark background */
+  color: white;
+  text-align: center;
+  padding: 15px;
+  position: sticky;
+  bottom: 0;
+  border: 1px solid var(--borderColor1);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+}
+
+.mediaPlayerBox {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+}
+
+
+.mediaPlayerAlbum {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 25%;
+}
+
+
+.artistName {
+  font-size: 0.8rem;
+  color: #bbb;
+}
+
+.mediaPlayerControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 15%;
+
+}
+
+.mediaPlayerExtras {
+  display: flex;
+  align-items: center;
+}
+
+.mediaPlayerProgressBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 35%;
+  justify-content: center;
+}
+
+
+.songCardLeft {
+  border-radius: 15px !important;
+  background-color: var(--yellow1) !important;
+}
+
+
+.songCardRight {
+  border-radius: 15px !important;
+  background-color: #252525  !important;
+  color: #ffff !important;
+  height: auto;
+}
+
+.songCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 50px !important;
+}
+
+
+.songCardContentRight {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px !important;
+}
+.songCardContentHero {
+  display: flex;
+  gap: 30px;
+  justify-content: space-between;
+}
+
+.songIntro {
+  font-family: var(--font-outfit) !important;
+  color:#000 !important ;
+  font-size: 24px !important;
+  font-weight: 400 !important;
+}
+
+.songTitle {
+  font-family: var(--font-outfit) !important;
+  color:#fff !important ;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+}
+
+.songMusicCard{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.songMusicBoxTitle{
+  font-family: var(--font-outfit) !important;
+  color:#fff !important ;
+  font-size: 20 !important;
+  font-weight: 600 !important;
+}
+
+
+.songMusicSeeMore{
+  font-family: var(--font-outfit) !important;
+  color:var( --borderYellow) !important ;
+  font-size: 20 !important;
+  font-weight: 400 !important;
+}
+
+
+.musicListCard{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.musicCard{
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--borderColor1);
+  border-radius: 0px;
+  width: 100%;
+  align-items: center;
+  height: 60px;
+  padding: 5px  0px;
+}
+
+.userCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: left;
+  justify-content: left;
+  min-width: 50px;
+  height: 300px;
+  padding: 20px;
+  border: 1px solid var(--borderColor1);
+  border-radius: 12px;
+  background-color: #020202;
+}
+
+.musicCardInner{
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.inforCard {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 2 !important;
+  border: 1px var(--borderColor1) solid !important;
+  background-color: #000 !important;
+  border-radius: 12px !important; 
+
+}
+
+.centerYX  {
+  display: flex !important;
+  flex-direction: column!important;
+  justify-content: center!important;
+  align-items: center!important;
+  width: 100%!important;
+  height: auto!important;
+}
+
+/* Enable hover only on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  a.primary:hover {
+    background: var(--button-primary-hover);
+    border-color: transparent;
+  }
+
+  a.secondary:hover {
+    background: var(--button-secondary-hover);
+    border-color: transparent;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 32px;
+    padding-bottom: 80px;
+  }
+
+  .main {
+    align-items: center;
+  }
+
+  .main ol {
+    text-align: center;
+  }
+
+  .ctas {
+    flex-direction: column;
+  }
+
+  .ctas a {
+    font-size: 14px;
+    height: 40px;
+    padding: 0 16px;
+  }
+
+  a.secondary {
+    min-width: auto;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .navbarLogo {
+    /* display: none; */
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo {
+    filter: invert();
+  }
+}

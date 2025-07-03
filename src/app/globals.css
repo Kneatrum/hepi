@@ -1,0 +1,133 @@
+:root {
+  --foreground: #000;
+  --yellow1:#F3B007;
+  --Yellow2: #2E2101;
+  --fontYellow: #D39A0B;
+  --borderYellow: #6B4D03;
+  --Yellow2: #2E2101;
+  --fontGrey: #6D6D6D;
+  --borderColor1:#2E2E2E;
+  --borderColor2:#2E2E2E;
+  --placeholder: #9CA3AF;
+
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: #fff;
+  background: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+.callToActionButton {
+  background-color: var(--Yellow2) !important;
+  text-transform: none !important;
+  color: var(--yellow1) !important;
+  font-family: var(--font-outfit) !important;
+}
+
+.yellowText {
+  color: var(--yellow1) !important;
+  font-family: var(--font-outfit) !important;
+}
+
+.spinner {
+  color: var(--yellow1) !important;
+}
+
+
+.hero {
+  max-height: 70vh;
+  border: 1px var(--borderColor1) solid;
+  background-color: #000 !important;
+  border-radius: 8px !important; 
+  padding: 10px !important;
+}
+
+
+.adminColumn {
+  height: 100vh;
+  border: 1px var(--borderColor1) solid;
+  background-color: #000 !important;
+  border-radius: 8px !important; 
+  padding: 10px !important;
+}
+
+
+.customBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 16px; /* 2 * 8px (MUI spacing unit) */
+  border: 1px solid #2E2E2E;
+  border-radius: 12px;
+  width: 100%;
+  height: auto;
+}
+
+.customBoxLeftAlign {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border: 1px solid #2E2E2E;
+  border-radius: 12px;
+  width: 100%;
+  height: auto;
+  color: #fff !important;
+  background-color: transparent !important;
+}
+
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+  border-radius: 8px;
+  border: 1px solid #2E2E2E;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}

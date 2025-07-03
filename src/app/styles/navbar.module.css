@@ -1,0 +1,77 @@
+.appBar {
+  background-color: #000 !important;
+  position: static;
+  border-bottom: 1px solid var(--borderColor1);
+  border-radius: 0px;
+}
+
+.logo{
+  font-family: var(--font-outfit) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3rem !important;
+  color: #fff !important;
+  text-transform: none;
+  font-size: 25px !important;
+}
+
+.pageLink{
+  font-family: var(--font-outfit) !important;
+  font-weight: 400 !important;
+  color: var(--fontGrey)!important;
+  text-transform: none !important;
+  text-align: center !important;
+  font-size: 16px !important;
+  /* border: 2px solid #fff; */
+}
+
+
+.pageLinkActive{
+  color: var(--yellow1) !important;
+  text-transform: none;
+}
+
+
+
+
+.navbarButton{
+  display: block;
+  text-align: bottom;
+  text-transform: none;
+}
+
+
+.navbarButtonActive{
+  border-bottom: 2px solid var(--yellow1) !important;
+  font-weight: 500 !important;
+  border-radius: 0 !important;
+}
+
+
+
+.navbarButtonBox{
+  display: flex;
+  gap: 5px;
+}
+
+.navbarIcons{
+  color: var(--fontGrey);
+}
+
+.navbarIconsActive{
+  color: var(--yellow1);
+}
+
+.callToActionButton {
+  background-color: var(--Yellow2) !important;
+  text-transform: none !important;
+  color: var(--yellow1) !important;
+  font-family: var(--font-outfit) !important;
+}
+
+
+@media (max-width: 600px) {
+  .pageLink{
+    color: #000 !important;
+  }
+  
+}
