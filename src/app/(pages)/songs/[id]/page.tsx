@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Dashboard from "@/app/components/layout/Dashboard";
 import styles from "../../../styles/page.module.css";
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
-import MediaPlayer from "@/app/components/common/MediaPlayer/MediaPlayer";
+// import MediaPlayer from "@/app/components/common/MediaPlayer/MediaPlayer";
 import Link from "next/link";
 import Image from "next/image";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
