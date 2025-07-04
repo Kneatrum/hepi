@@ -96,7 +96,7 @@ const ArtistDetailsModal: React.FC<ArtistDetailsModalProps> = ({ artist, onClose
 
 
           <Box sx={{ mt: 3, textAlign: 'left', backgroundColor: 'rgba(158, 157, 157, 0.16)', padding: 2, borderRadius: '12px'}}>
-            {artist.name}'s social media
+            {artist.name}&apos;s social media
             <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center', gap: 2, mt: 2 }}>
               <IconButton component="a" href={`https://x.com/${artist.name.replace(/\s+/g, '')}`} target="_blank" rel="noopener noreferrer" sx={{ color: 'text.primary' }}>
                 <XIcon />

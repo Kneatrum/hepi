@@ -22,7 +22,7 @@ import Spinner from "@/app/components/common/spinners/loading";
 import InfoCard from "@/app/components/common/ui/InfoCard";
 import { useRouter } from "next/navigation";
 
-import ArtistEditDialog from "@/app/components/common/ui/ArtistEditDialog";
+// import ArtistEditDialog from "@/app/components/common/ui/ArtistEditDialog";
 import CreateArtistDialog from "@/app/components/common/dialogs/CreateArtistDialog";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ArtistDetailsModal from "@/app/components/common/ui/ArtistDetailsModal";
@@ -100,7 +100,7 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [popupOpen, setPopupOpen] = useState(false);
+  // const [popupOpen, setPopupOpen] = useState(false);
 
 
   useEffect(() => {
@@ -205,7 +205,7 @@ export default function Page() {
                           }}
                           onClick={() => {
                             setSelectedArtist(artist);
-                            setPopupOpen(true);
+                            // setPopupOpen(true);
                           }}
                         >
                           <TableCell component="th" scope="row">
