@@ -85,7 +85,10 @@ export default function AddSongsForm() {
   };
 
   // Handle artist selection
-  const handleArtistChange = ( newValue: Artist | string | null) => {
+  const handleArtistChange = (
+    event: React.SyntheticEvent<Element, Event>,
+    newValue: Artist | string | null
+  ) => {
     if (typeof newValue === 'string') {
       // User typed a custom value - you might want to handle this differently
       setSelectedArtist(null);
@@ -102,7 +105,10 @@ export default function AddSongsForm() {
   };
 
   // Handle genre selection
-  const handleGenreChange = ( newValue: Genre | string | null) => {
+  const handleGenreChange = (
+    event: React.SyntheticEvent<Element, Event>,
+    newValue: Genre | string | null
+  ) => {
     if (typeof newValue === 'string') {
       // User typed a custom value - you might want to handle this differently
       setSelectedGenre(null);

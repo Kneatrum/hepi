@@ -15,7 +15,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import { ParsedSong } from '@/app/utils/fetchSongsUtils'; // Import ParsedSong
-import CustomAutocomplete from "../CustomFields/CustomAutocomplete";
+// import CustomAutocomplete from "../CustomFields/CustomAutocomplete";
 import { Artist, Genre } from "@/app/types";
 import { useSession } from "@/app/context/SessionContext";
 
@@ -156,8 +156,8 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
 }) => {
   const [existingArtists, setExistingArtists] = useState<Artist[]>([]);
   const [existingGenres, setExistingGenres] = useState<Genre[]>([]);
-  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
-  const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
+  // const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+  // const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
   const [loading, setLoading] = useState(false);
   // Initialize formData with empty values, it will be populated by useEffect
   const [formData, setFormData] = useState<SongFormData>({
@@ -233,12 +233,12 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
   // Effect to set selected Artist/Genre objects for Autocomplete when existing data loads
   useEffect(() => {
     if (open && song && existingArtists.length > 0) {
-      const artist = existingArtists.find(a => a.artistId === song.artistId);
-      setSelectedArtist(artist || null);
+      // const artist = existingArtists.find(a => a.artistId === song.artistId);
+      // setSelectedArtist(artist || null);
     }
     if (open && song && existingGenres.length > 0) {
-      const genre = existingGenres.find(g => g.genreId === song.genreId);
-      setSelectedGenre(genre || null);
+      // const genre = existingGenres.find(g => g.genreId === song.genreId);
+      // setSelectedGenre(genre || null);
     }
   }, [open, song, existingArtists, existingGenres]);
 
@@ -251,38 +251,38 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
   };
 
   // Handle artist selection
-  const handleArtistChange = ( newValue: Artist | string | null) => {
-    if (typeof newValue === 'string') {
-      // User typed a custom value - you might want to handle this differently
-      setSelectedArtist(null);
-      setFormData({ ...formData, artistId: 0 });
-    } else if (newValue) {
-      // User selected an existing artist
-      setSelectedArtist(newValue);
-      setFormData({ ...formData, artistId: newValue.artistId });
-    } else {
-      // User cleared the selection
-      setSelectedArtist(null);
-      setFormData({ ...formData, artistId: 0 });
-    }
-  };
+  // const handleArtistChange = ( newValue: Artist | string | null) => {
+  //   if (typeof newValue === 'string') {
+  //     // User typed a custom value - you might want to handle this differently
+  //     setSelectedArtist(null);
+  //     setFormData({ ...formData, artistId: 0 });
+  //   } else if (newValue) {
+  //     // User selected an existing artist
+  //     setSelectedArtist(newValue);
+  //     setFormData({ ...formData, artistId: newValue.artistId });
+  //   } else {
+  //     // User cleared the selection
+  //     setSelectedArtist(null);
+  //     setFormData({ ...formData, artistId: 0 });
+  //   }
+  // };
 
  // Handle genre selection
-  const handleGenreChange = ( newValue: Genre | string | null) => {
-    if (typeof newValue === 'string') {
-      // User typed a custom value - you might want to handle this differently
-      setSelectedGenre(null);
-      setFormData({ ...formData, genreId: 0 });
-    } else if (newValue) {
-      // User selected an existing genre
-      setSelectedGenre(newValue);
-      setFormData({ ...formData, genreId: newValue.genreId });
-    } else {
-      // User cleared the selection
-      setSelectedGenre(null);
-      setFormData({ ...formData, genreId: 0 });
-    }
-  };
+  // const handleGenreChange = ( newValue: Genre | string | null) => {
+  //   if (typeof newValue === 'string') {
+  //     // User typed a custom value - you might want to handle this differently
+  //     setSelectedGenre(null);
+  //     setFormData({ ...formData, genreId: 0 });
+  //   } else if (newValue) {
+  //     // User selected an existing genre
+  //     setSelectedGenre(newValue);
+  //     setFormData({ ...formData, genreId: newValue.genreId });
+  //   } else {
+  //     // User cleared the selection
+  //     setSelectedGenre(null);
+  //     setFormData({ ...formData, genreId: 0 });
+  //   }
+  // };
 
   // Handle form submission
   const handleSubmit = async () => {
@@ -406,7 +406,7 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
               />
             </Box>
 
-            <Box>
+            {/* <Box>
               <Typography variant="body2" sx={{ color: '#FFEB3B', mb: 1 }}>
                 Artist:
               </Typography>
@@ -418,9 +418,9 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
                 getOptionLabel={(option) => typeof option === 'string' ? option : option.name}
                 freeSolo
               />
-            </Box>
+            </Box> */}
 
-            <Box>
+            {/* <Box>
               <Typography variant="body2" sx={{ color: '#FFEB3B', mb: 1 }}>
                 Genre:
               </Typography>
@@ -432,7 +432,7 @@ const SongEditDialog: React.FC<SongEditDialogProps> = ({
                 getOptionLabel={(option) => typeof option === 'string' ? option : option.name}
                 freeSolo
               />
-            </Box>
+            </Box> */}
           </Box>
         </DialogContent>
 

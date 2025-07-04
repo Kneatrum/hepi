@@ -1,18 +1,18 @@
 "use client";
-import { useState } from 'react';
+// import { useState } from 'react';
 import { Card, CardContent, Typography, Button, Box, Avatar } from '@mui/material';
 import { Artist } from '../../../types';
-import ArtistDetailsModal from './ArtistDetailsModal';
+// import ArtistDetailsModal from './ArtistDetailsModal';
 
 interface ArtistCardProps {
   artist: Artist;
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
 
-  const handleOpenModal = () => setModalOpen(true);
-  const handleCloseModal = () => setModalOpen(false);
+  // const handleOpenModal = () => setModalOpen(true);
+  // const handleCloseModal = () => setModalOpen(false);
 
   return (
     <>
@@ -64,7 +64,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
 
           <Button 
             variant="contained" 
-            onClick={handleOpenModal} 
+            // onClick={handleOpenModal} 
             sx={{ 
               backgroundColor: 'secondary.main', 
               color: 'primary.main',
@@ -77,7 +77,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
           </Button>
         </CardContent>
       </Card>
-      <ArtistDetailsModal artist={artist} open={modalOpen} onClose={handleCloseModal} />
+      {/* <ArtistDetailsModal artist={artist}  onClose={handleCloseModal} /> */}
     </>
   );
 };

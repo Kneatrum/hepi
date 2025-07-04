@@ -120,7 +120,7 @@ export default function Page() {
       };
   
       fetchVotes();
-    }, [votesApiUrl, accessToken, router]);
+    }, [ accessToken, router]);
 
 
 

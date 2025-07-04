@@ -8,6 +8,7 @@ import CustomField from "../CustomFields/CustomField";
 import SubmitButton from "../CustomButtons/SubmitButton";
 import { useSession } from "@/app/context/SessionContext";
 // import CustomTextareaField from "../CustomFields/CustomTextAreaField";
+import { SelectChangeEvent } from "@mui/material";
 import CustomSelect from "../CustomFields/CustomSelect";  // Import the CustomSelect component
 
 interface FormData {
@@ -33,9 +34,9 @@ export default function RoleForm() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleChange = (field: keyof FormData) =>
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { value: unknown }>) => {
-      setFormData({ ...formData, [field]: e.target.value });
-    };
+  (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
+    setFormData({ ...formData, [field]: e.target.value as string });
+  };
 
   useEffect(() => {
     if (!accessToken) {

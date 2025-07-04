@@ -14,10 +14,10 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
-import CustomAutocomplete from "../CustomFields/CustomAutocomplete";
+// import CustomAutocomplete from "../CustomFields/CustomAutocomplete";
 import { Artist } from "@/app/types";
 import { useSession } from "@/app/context/SessionContext";
-import { Country, Tribe } from "@/app/types";
+// import { Country, Tribe } from "@/app/types";
 
 
 
@@ -33,27 +33,27 @@ interface ArtistFormData {
 
 
 // Define the overall response structure
-interface CountryApiResponse {
-  content: Country[];
-  totalPages: number;
-  totalElements: number;
-  last: boolean;
-  size: number;
-  number: number;
-  sort: string;
-  numberOfElements: number;
-  first: boolean;
-  empty: boolean;
-  pageable: string;
-}
+// interface CountryApiResponse {
+//   content: Country[];
+//   totalPages: number;
+//   totalElements: number;
+//   last: boolean;
+//   size: number;
+//   number: number;
+//   sort: string;
+//   numberOfElements: number;
+//   first: boolean;
+//   empty: boolean;
+//   pageable: string;
+// }
 
 // Define the type for the simplified output
-interface SimplifiedCountry {
-  countryId: number;
-  name: string;
-  code: string;
-  region: string;
-}
+// interface SimplifiedCountry {
+//   countryId: number;
+//   name: string;
+//   code: string;
+//   region: string;
+// }
 
 interface ArtistEditDialogProps {
   open: boolean;
@@ -210,10 +210,10 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
 
  
   
-  const [existingCountries, setExistingCountries] = useState<SimplifiedCountry[]>([]);
-  const [existingTribes, setExistingTribes] = useState<Tribe[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<SimplifiedCountry | null>(null);
-  const [selectedTribe, setSelectedTribe] = useState<Tribe | null>(null);
+  // const [existingCountries, setExistingCountries] = useState<SimplifiedCountry[]>([]);
+  // const [existingTribes, setExistingTribes] = useState<Tribe[]>([]);
+  // const [selectedCountry, setSelectedCountry] = useState<SimplifiedCountry | null>(null);
+  // const [selectedTribe, setSelectedTribe] = useState<Tribe | null>(null);
   const { accessToken } = useSession();
   // const [ editMode , setEditMode ] = useState<boolean>(false);
 
@@ -227,8 +227,8 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
                 );
                 const data = await res.json();
                 if (data) {
-                  const simplifiedCountries = extractCountries(data);
-                  setExistingCountries(simplifiedCountries);
+                  // const simplifiedCountries = extractCountries(data);
+                  // setExistingCountries(simplifiedCountries);
                   console.log("countries>>>", data);
                 }
             } catch (error) {
@@ -243,7 +243,7 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
                 );
                 const data = await res.json();
                 if (data) {
-                    setExistingTribes(data);
+                    // setExistingTribes(data);
                     console.log("tribes>>>", data);
                 }
             } catch (error) {
@@ -251,14 +251,14 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
             }
         }
 
-        function extractCountries(response: CountryApiResponse): SimplifiedCountry[] {
-          return response.content.map(({ countryId, name, code, region }) => ({
-            countryId,
-            name,
-            code,
-            region
-          }));
-        }
+        // function extractCountries(response: CountryApiResponse): SimplifiedCountry[] {
+        //   return response.content.map(({ countryId, name, code, region }) => ({
+        //     countryId,
+        //     name,
+        //     code,
+        //     region
+        //   }));
+        // }
 
 
         fetchCountries();
@@ -292,38 +292,38 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
 
 
   // Handle artist selection
-  const handleCountryChange = ( newValue: Country | string | null) => {
-    if (typeof newValue === 'string') {
-      // User typed a custom value - you might want to handle this differently
-      setSelectedCountry(null);
-      setArtistFormData({ ...artistformData, countryId: 0 });
-    } else if (newValue) {
-      // User selected an existing artist
-      setSelectedCountry(newValue);
-      setArtistFormData({ ...artistformData, countryId: newValue.countryId });
-    } else {
-      // User cleared the selection
-      setSelectedCountry(null);
-      setArtistFormData({ ...artistformData, countryId: 0 });
-    }
-  };
+  // const handleCountryChange = ( newValue: Country | string | null) => {
+  //   if (typeof newValue === 'string') {
+  //     // User typed a custom value - you might want to handle this differently
+  //     setSelectedCountry(null);
+  //     setArtistFormData({ ...artistformData, countryId: 0 });
+  //   } else if (newValue) {
+  //     // User selected an existing artist
+  //     setSelectedCountry(newValue);
+  //     setArtistFormData({ ...artistformData, countryId: newValue.countryId });
+  //   } else {
+  //     // User cleared the selection
+  //     setSelectedCountry(null);
+  //     setArtistFormData({ ...artistformData, countryId: 0 });
+  //   }
+  // };
 
   // Handle genre selection
-  const handleTribeChange = ( newValue: Tribe | string | null) => {
-    if (typeof newValue === 'string') {
-      // User typed a custom value - you might want to handle this differently
-      setSelectedTribe(null);
-      setArtistFormData({ ...artistformData, tribeId: 0 });
-    } else if (newValue) {
-      // User selected an existing genre
-      setSelectedTribe(newValue);
-      setArtistFormData({ ...artistformData, tribeId: newValue.tribeId });
-    } else {
-      // User cleared the selection
-      setSelectedTribe(null);
-      setArtistFormData({ ...artistformData, tribeId: 0 });
-    }
-  };
+  // const handleTribeChange = ( newValue: Tribe | string | null) => {
+  //   if (typeof newValue === 'string') {
+  //     // User typed a custom value - you might want to handle this differently
+  //     setSelectedTribe(null);
+  //     setArtistFormData({ ...artistformData, tribeId: 0 });
+  //   } else if (newValue) {
+  //     // User selected an existing genre
+  //     setSelectedTribe(newValue);
+  //     setArtistFormData({ ...artistformData, tribeId: newValue.tribeId });
+  //   } else {
+  //     // User cleared the selection
+  //     setSelectedTribe(null);
+  //     setArtistFormData({ ...artistformData, tribeId: 0 });
+  //   }
+  // };
 
 
 
@@ -452,7 +452,7 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
               />
             </Box>
 
-            <Box>
+            {/* <Box>
               <Typography variant="body2" sx={{ color: '#FFEB3B', mb: 1 }}>
                 Country:
               </Typography>
@@ -465,9 +465,9 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
                 getOptionLabel={(option) => typeof option === 'string' ? option : option.name}
                 freeSolo
               />         
-            </Box>
+            </Box> */}
 
-            <Box>
+            {/* <Box>
               <Typography variant="body2" sx={{ color: '#FFEB3B', mb: 1 }}>
                 Tribe:
               </Typography>
@@ -480,7 +480,7 @@ const CountryEditDialog: React.FC<ArtistEditDialogProps> = ({
                 getOptionLabel={(option) => typeof option === 'string' ? option : option.name}
                 freeSolo
               />
-            </Box>
+            </Box> */}
             
           </Box>
         </DialogContent>

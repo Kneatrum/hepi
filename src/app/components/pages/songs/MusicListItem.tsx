@@ -22,7 +22,7 @@ const MusicListItem = ({ id, song, isPlaying, onPlay }: MusicListItemProps) => {
         <Box sx={{ display: "flex", gap: "12px", alignItems: "center", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", gap: "12px", alignItems: "center" }}>
             <Image
-              src={song.avatar}
+              src={song.thumbnailPath}
               alt={song.title}
               width={49}
               height={49}
@@ -30,12 +30,12 @@ const MusicListItem = ({ id, song, isPlaying, onPlay }: MusicListItemProps) => {
             />
             <Box>
               <Typography className={styles.songMusicTitle}>{song.title}</Typography>
-              <Typography className={styles.songMusicArtist}>{song.artist}</Typography>
+              <Typography className={styles.songMusicArtist}>{song.artist.name}</Typography>
             </Box>
           </Box>
         </Box>
       </Link>
-      <Box onClick={() => onPlay(song.id)} style={{ cursor: "pointer" }}>
+      <Box onClick={() => onPlay(song.filePath)} style={{ cursor: "pointer" }}>
         {isPlaying ? <PauseOutlinedIcon /> : <PlayArrowOutlinedIcon />}
       </Box>
     </Box>

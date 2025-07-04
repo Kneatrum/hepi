@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "@/app/context/SessionContext";
 import { Box, Typography, IconButton, Slider, Snackbar, Alert } from "@mui/material";
 import Image from "next/image";
@@ -63,11 +63,15 @@ export default function MediaPlayer({
   // State to track if the target playback duration message has been logged for the current song
   const [hasLoggedTargetPlayback, setHasLoggedTargetPlayback] = useState(false);
 
-  const showSnackbar = (message: string, severity: typeof snackbarSeverity) => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
+  const showSnackbar = useCallback(
+    (message: string, severity: typeof snackbarSeverity) => {
+      setSnackbarMessage(message);
+      setSnackbarSeverity(severity);
+      setSnackbarOpen(true);
+    },
+    [] // No external dependencies used inside this function
+  );
+
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -116,53 +120,53 @@ export default function MediaPlayer({
 
 
   // Fetch user votes from backend
-  useEffect(() => {
-    if (!accessToken || !userID) return;
-    const fetchUserVotes = async () => {
-      try {
-        const res = await fetch(votesUrl, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+useEffect(() => {
+  if (!accessToken || !userID) return;
+  
+  const fetchUserVotes = async () => {
+    try {
+      const res = await fetch(votesUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-        if (!res.ok) {
-          const errorBody = await res.json();
-          throw new Error(errorBody?.message || "Failed to fetch votes.");
-        }
-
-        const result = await res.json();
-        const votes = result?.data?.content || [];
-
-        const upVotes = new Set<number>();
-        const downVotes = new Set<number>();
-
-        for (const vote of votes) {
-          const songId = vote.song?.songId;
-          if (!songId) continue;
-
-          if (vote.voteType === "UPVOTE") {
-            upVotes.add(songId);
-          } else if (vote.voteType === "DOWNVOTE") {
-            downVotes.add(songId);
-          }
-        }
-
-        setUpVotedSongs(upVotes);
-        setDownVotedSongs(downVotes);
-        showSnackbar("Vote data loaded.", "success");
-      } catch (err) {
-        console.error("Error loading votes:", err);
-        const message = err instanceof Error ? err.message : "An unknown error occurred";
-        showSnackbar(`Failed to load votes: ${message}`, "error");
+      if (!res.ok) {
+        const errorBody = await res.json();
+        throw new Error(errorBody?.message || "Failed to fetch votes.");
       }
-    };
 
-    fetchUserVotes();
-    console.log("User ID", userID)
-    console.log("User role", userRole)
-  }, [accessToken, userID, userRole]);
+      const result = await res.json();
+      const votes = result?.data?.content || [];
+
+      const upVotes = new Set<number>();
+      const downVotes = new Set<number>();
+
+      for (const vote of votes) {
+        const songId = vote.song?.songId;
+        if (!songId) continue;
+
+        if (vote.voteType === "UPVOTE") {
+          upVotes.add(songId);
+        } else if (vote.voteType === "DOWNVOTE") {
+          downVotes.add(songId);
+        }
+      }
+
+      setUpVotedSongs(upVotes);
+      setDownVotedSongs(downVotes);
+      showSnackbar("Vote data loaded.", "success");
+    } catch (err) {
+      console.error("Error loading votes:", err);
+      const message = err instanceof Error ? err.message : "An unknown error occurred";
+      showSnackbar(`Failed to load votes: ${message}`, "error");
+    }
+  };
+
+  fetchUserVotes();
+}, [accessToken, userID, userRole, showSnackbar]);
+
 
 
 
@@ -513,17 +517,17 @@ const interactWithSong = async (songId: number, type: string) => {
     }
   };
 
-  const playNextSong = () => {
+  const playNextSong = useCallback(() => {
     if (songs.length <= 1) return;
-    
-    // Add current song to shuffle history
+
     if (isShuffling) {
       setShuffleHistory(prev => [...prev, currentSongIndex]);
     }
-    
+
     const nextIndex = getNextSongIndex();
     onSongChange(nextIndex);
-  };
+  }, [songs, currentSongIndex, isShuffling, onSongChange]);
+
 
   const playPreviousSong = () => {
     if (songs.length <= 1) return;
