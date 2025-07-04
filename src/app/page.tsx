@@ -43,7 +43,7 @@ export default function Page() {
 
         if (!accessToken) {
           console.error("No access token available");
-          // setLoading(false);
+          router.push('/login');
           return;
         }
         
@@ -69,7 +69,7 @@ export default function Page() {
 
 
 
-      } catch (error) {
+    } catch (error) {
         console.error("Failed to fetch songs:", error);
       } finally {
         setLoading(false);
@@ -77,7 +77,7 @@ export default function Page() {
     }
   
     fetchSongs();
-  }, [ accessToken]);
+  }, [ accessToken, router]);
 
 
 
@@ -88,7 +88,7 @@ export default function Page() {
         if (!accessToken) {
           console.error("No access token available");
           // setLoading(false);
-          // router.push('/login');
+          router.push('/login');
           return;
         }
   
