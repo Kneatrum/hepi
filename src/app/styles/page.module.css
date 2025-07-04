@@ -204,7 +204,7 @@ a.secondary {
   display: flex;
   flex-direction: column;
   background-color: #000;
-  overflow: hidden; 
+  overflow-y: auto; 
 }
 
 .authBox {

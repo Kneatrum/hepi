@@ -13,6 +13,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ColorToggleButton from '../common/ui/ColorToggleButton';
 import { getUserRole } from "../../utils/authUtils";
+import { useSession } from "@/app/context/SessionContext";
 
 const pageObjects = [
   { name: "Library", icon: <VideoLibraryIcon sx={{ width: "20px", height: "20px" }} />, path: "/library" },
@@ -24,35 +25,24 @@ const pageObjects = [
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [authenticated, setAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(true);
   const [isUser, setIsUser] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { accessToken, clearTokens, isAuthenticated } = useSession();
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      setAuthenticated(false);
+    if (!accessToken) {
+      setIsAdmin(false);
+      setIsUser(false);
       return;
     }
 
-    const role = getUserRole(token);
+    const role = getUserRole(accessToken);
 
-    if (role === "SUPERADMIN") {
-      setIsAdmin(true);
-      setIsUser(false);
-    } else if (role === "USER") {
-      setIsAdmin(false);
-      setIsUser(true);
-    } else {
-      setIsAdmin(false);
-      setIsUser(false);
-    }
-
-
-    setAuthenticated(!!token);
-  }, [isAdmin, isUser]);
+    setIsAdmin(role === "SUPERADMIN");
+    setIsUser(role === "USER");
+  }, [accessToken]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorElNav(event.currentTarget);
   const handleCloseNavMenu = () => setAnchorElNav(null);
@@ -60,9 +50,7 @@ const ResponsiveAppBar = () => {
 
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    setAuthenticated(false);
+    clearTokens();
     router.push("/login");
   };
 
@@ -75,7 +63,7 @@ const ResponsiveAppBar = () => {
           </Link>
 
           {/* Mobile Navigation */}
-          {authenticated && (
+          {isAuthenticated&& (
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton size="large" onClick={handleOpenNavMenu} color="inherit">
                 <MenuIcon />
@@ -94,7 +82,7 @@ const ResponsiveAppBar = () => {
           
 
           {/* Desktop Navigation */}
-          { authenticated && (
+          { isAuthenticated && (
              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pageObjects.map(({ name, icon, path }) => {
                 const isActive = pathname === path;
@@ -117,9 +105,10 @@ const ResponsiveAppBar = () => {
          
           {/* User Profile Menu or Login */}
           <Box sx={{ flexGrow: 0, ml: "auto", display: "flex", alignItems: "center" }}>
-            {authenticated ?  (
+            {isAuthenticated ?  (
               <Box sx={{display:"flex", gap:"5px"}}>
                 {isAdmin && <ColorToggleButton />}
+                {isUser && ''}
                 <Button className="callToActionButton" onClick={handleLogout}>Logout</Button>
                 </Box>
             ) : (
