@@ -146,44 +146,41 @@ export default function Page() {
             <Box className={styles.layer}>
               <Box className={styles.layerTop}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography className={styles.layerTopIntroText}>
-                    Countries
-                  </Typography>
-                  <Button 
-                    className="callToActionButton"
-                    onClick={() => setDialogOpen(true)}
-                  >
-                    Add Country
-                  </Button>
+                  <Box className={styles.layerTopSearch}>
+                    <CustomSearchField
+                      placeholder="Search countries by name."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </Box>
+                  <Box sx={{ paddingRight: "20px" }}>
+                    <Button 
+                      className="callToActionButton"
+                      onClick={() => setDialogOpen(true)}
+                    >
+                      Add Country
+                    </Button>
+                  </Box>
                 </Box>
               </Box>
-              <Box className={styles.layerTopSearch}>
-                <CustomSearchField
-                  placeholder="Search countries by name."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </Box>
+              
             </Box>
 
             {/* Users Table */}
-            <Box sx={{ height: "600px", overflowY: "auto", paddingRight: "10px" }}>
-              {loading && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                  <Spinner />
-                </Box>
-              )}
-              
-              {!loading && filteredCountries.length === 0 ? (
+            {loading && (
+              <Spinner />
+            )}
+
+            {!loading && filteredCountries.length === 0 ? (
                 <Box className={styles.centerYX}>
                   <InfoCard
                     title="No tribe found"
                     description="Try searching with a different keyword or check back later."
                   />
                 </Box>
-              ) : (
-                !loading && (
-                  <TableContainer component={Paper}>
+              ) : ( !loading && (
+                <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
+                  <TableContainer component={Paper} sx={{borderRadius: "0px"}}>
                     <Table sx={{ minWidth: 650 }} aria-label="countries table">
                       <TableHead >
                         <TableRow>
@@ -234,9 +231,8 @@ export default function Page() {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                )
-              )}
-            </Box>
+                </Box>
+              ))}
           </Box>
         </Box>
         <CountryEditDialog 

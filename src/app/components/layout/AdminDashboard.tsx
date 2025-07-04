@@ -9,20 +9,13 @@ export default function AdminDashboard({ children }: Readonly<{ children: React.
     <Box className={styles.dashboard}>
       <Navbar />
         <Box sx={{ display: "flex", gap: 2, overflow: "hidden" }}>
-          {/* Sidebar */}
-          <Box
-            sx={{
-              bgcolor: "transparent",
-              color: "white",
-              borderRadius: 2,
-              minHeight: "100%",
-            }}
-          >
-            <Sidebar />
-          </Box>
-
-          
-          <Box sx={{ flexGrow: 1, overflowY: "auto", height: "100vh" }} >
+          <Sidebar />
+          <Box sx={{ 
+            flexGrow: 1, 
+            overflowY: "auto", 
+            height: "100vh", 
+            paddingTop: "80px"
+          }} >
             {children}
           </Box>
         </Box>

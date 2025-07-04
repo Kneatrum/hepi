@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
-import { Typography, Box, Button } from "@mui/material";
+import {  Box, Button } from "@mui/material";
 import styles from "../../../styles/page.module.css";
 import InfoCard from "@/app/components/common/ui/InfoCard";
 import { useRouter } from "next/navigation";
@@ -54,11 +54,11 @@ export default function Page() {
 
   useEffect(() => {
       const fetchVotes = async () => {
-        setLoading(true);
+        // setLoading(true);
   
         if (!accessToken) {
           console.error("No access token available");
-          setLoading(false);
+          // setLoading(false);
           router.push('/login');
           return;
         }
@@ -85,7 +85,7 @@ export default function Page() {
           // setError(err instanceof Error ? err.message : 'Failed to fetch votes');
           console.error('Error fetching votes:', err);
         } finally {
-          setLoading(false);
+          // setLoading(false);
         }
         
       };
@@ -103,8 +103,8 @@ export default function Page() {
 
         if (!accessToken) {
           console.error("No access token available");
-          setLoading(false);
-          router.push('/login');
+          // setLoading(false);
+          // router.push('/login');
           return;
         }
 
@@ -167,43 +167,42 @@ export default function Page() {
               <Box className={styles.layer}>
                 <Box className={styles.layerTop}>
                   <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography className={styles.layerTopIntroText}>
-                      Songs
-                    </Typography>
-                    <Button 
-                      className="callToActionButton"
-                      onClick={handleBackToArtistsClick}
-                    >
-                     Add a song
-                    </Button>
+                    <Box className={styles.layerTopSearch}>
+                      <CustomSearchField
+                        placeholder="Search a song..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </Box>
+                    <Box sx={{ paddingRight: "20px" }}>
+                      <Button 
+                        className="callToActionButton"
+                        onClick={handleBackToArtistsClick}
+                      >
+                      Add a song
+                      </Button>
+                    </Box>
                   </Box>
                  
                   
                 </Box>
-                <Box className={styles.layerTopSearch}>
-                  <CustomSearchField
-                    placeholder="Search a song..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </Box>
+                
               </Box>
     
-          {/* Songs box */}
-          <Box sx={{ height: "600px", overflowY: "auto", paddingRight: "10px" }}>
-            {/* Suggested Singers */}
-            <Box className={styles.gridContainer} sx={{ mt: 3 }}>
-              { loading && (
-                <Spinner />
-              )}
-              {!loading && filteredSongs.length === 0 ? (
-                <Box className={styles.centerYX}>
-                  <InfoCard
-                    title="No songs found"
-                    description="Try searching with a different keyword or check back later."
-                  />
-                </Box>
-              ) : (
+          { loading && (
+            <Spinner />
+          )}
+
+          {!loading && filteredSongs.length === 0 ? (
+            <Box className={styles.centerYX}>
+              <InfoCard
+                title="No songs found"
+                description="Try searching with a different keyword or check back later."
+              />
+            </Box>
+          ) : ( !loading && (
+            <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
+              <Box className={styles.gridContainer} sx={{ mt: 3 }}>
                 <SongCard
                   songs={filteredSongs}
                   currentSongIndex={currentSongIndex}
@@ -213,11 +212,9 @@ export default function Page() {
                   userRole={userRole ?? undefined}
                   adminMode={true} 
                 />
-              )}
-
-             
+              </Box>
             </Box>
-          </Box>
+          ))}
         </Box>
       </Box>
       {filteredSongs.length > 0 && userID && userRole && (

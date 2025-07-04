@@ -173,27 +173,19 @@ export default function Page() {
           <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
             <Box className={styles.layer}>
               <Box className={styles.layerTop}>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography className={styles.layerTopIntroText}>
-                    Users
-                  </Typography>
-                </Box>
-              </Box>
-              <Box className={styles.layerTopSearch}>
-                <CustomSearchField
+                <Box sx={{ width: "30%" }}>
+                  <CustomSearchField
                   placeholder="Search users by name or email..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                </Box>
               </Box>
             </Box>
 
             {/* Users Table */}
-            <Box sx={{ height: "600px", overflowY: "auto", paddingRight: "10px" }}>
-              {loading && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                  <Spinner />
-                </Box>
+              { loading && (
+                <Spinner />
               )}
               
               {!loading && filteredUsers.length === 0 ? (
@@ -205,68 +197,68 @@ export default function Page() {
                 </Box>
               ) : (
                 !loading && (
-                  <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="users table">
-                      <TableHead >
-                        <TableRow>
-                          <TableCell>Name</TableCell>
-                          <TableCell>Email</TableCell>
-                          <TableCell>Phone Number</TableCell>
-                          <TableCell>Role</TableCell>
-                          <TableCell>Status</TableCell>
-                          <TableCell>Country</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filteredUsers.map((user) => (
-                          <TableRow
-                            key={user.id}
-                            sx={{ 
-                              '&:last-child td, &:last-child th': { border: 0 },
-                              cursor: 'pointer'
-                            }}
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setPopupOpen(true);
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} />
-                                <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>
-                                  {user.firstname} {user.lastname}
-                                </Typography>
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Typography sx={{ color: '#fff' }}>
-                                {user.email}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography sx={{ color: '#fff' }}>
-                                {user.userPhoneNumber}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              {getRoleChip(user.roleName)}
-                            </TableCell>
-                            <TableCell>
-                              {getStatusChip(user.roleStatus)}
-                            </TableCell>
-                            <TableCell>
-                              <Typography sx={{ color: '#fff' }}>
-                                {user.country || "Not specified"}
-                              </Typography>
-                            </TableCell>
+                  <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
+                    <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 650 }} aria-label="users table">
+                        <TableHead >
+                          <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Phone Number</TableCell>
+                            <TableCell>Role</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell>Country</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                )
-              )}
-            </Box>
+                        </TableHead>
+                        <TableBody>
+                          {filteredUsers.map((user) => (
+                            <TableRow
+                              key={user.id}
+                              sx={{ 
+                                '&:last-child td, &:last-child th': { border: 0 },
+                                cursor: 'pointer'
+                              }}
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setPopupOpen(true);
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} />
+                                  <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>
+                                    {user.firstname} {user.lastname}
+                                  </Typography>
+                                </Box>
+                              </TableCell>
+                              <TableCell>
+                                <Typography sx={{ color: '#fff' }}>
+                                  {user.email}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography sx={{ color: '#fff' }}>
+                                  {user.userPhoneNumber}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                {getRoleChip(user.roleName)}
+                              </TableCell>
+                              <TableCell>
+                                {getStatusChip(user.roleStatus)}
+                              </TableCell>
+                              <TableCell>
+                                <Typography sx={{ color: '#fff' }}>
+                                  {user.country || "Not specified"}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Box>
+                ))}
           </Box>
         </Box>
         <UserPopup 

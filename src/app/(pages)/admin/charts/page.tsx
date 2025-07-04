@@ -7,7 +7,7 @@ import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
 import Spinner from "@/app/components/common/spinners/loading";
 import InfoCard from "@/app/components/common/ui/InfoCard";
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
+// import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
@@ -108,7 +108,7 @@ export default function SongAnalyticsPage() {
     return [
       {
         title: "Most Played Songs",
-        icon: <PlayArrowIcon sx={{ color: "#2196f3", fontSize: '24px' }} />,
+        icon: <PlayArrowIcon sx={{ color: "#ff9800", fontSize: '24px' }} />,
         color: "#2196f3",
         sortKey: "playCount",
         songs: [...songs]
@@ -118,7 +118,7 @@ export default function SongAnalyticsPage() {
       },
       {
         title: "Most Liked Songs",
-        icon: <FavoriteIcon sx={{ color: "#e91e63", fontSize: '24px' }} />,
+        icon: <FavoriteIcon sx={{ color: "#ff9800", fontSize: '24px' }} />,
         color: "#e91e63",
         sortKey: "likeCount",
         songs: [...songs]
@@ -138,7 +138,7 @@ export default function SongAnalyticsPage() {
       },
       {
         title: "Most Upvoted Songs",
-        icon: <ThumbUpIcon sx={{ color: "#4caf50", fontSize: '24px' }} />,
+        icon: <ThumbUpIcon sx={{ color: "#ff9800", fontSize: '24px' }} />,
         color: "#4caf50",
         sortKey: "upvotes",
         songs: [...songs]
@@ -210,21 +210,20 @@ export default function SongAnalyticsPage() {
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: 2,
+              gap: 1,
               flex: 1,
             }}
           >
             <Typography
               sx={{
                 fontSize: "16px",
-                fontWeight: "bold",
-                color: "#fff",
+                color: "gray",
                 minWidth: "24px",
               }}
             >
-              #{rank}
+              {rank}
             </Typography>
-            <MusicNoteIcon sx={{ color: "white", fontSize: '28px' }} />
+            {/* <MusicNoteIcon sx={{ color: "gray", fontSize: '28px' }} /> */}
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Typography 
                 sx={{ 
@@ -275,14 +274,14 @@ export default function SongAnalyticsPage() {
             {/* Analytics Stats */}
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <FavoriteIcon sx={{ color: "#e91e63", fontSize: '18px' }} />
+                <FavoriteIcon sx={{ color: "#ff9800", fontSize: '18px' }} />
                 <Typography sx={{ color: "#fff", fontSize: "14px" }}>
                   {formatNumber(song.likeCount)} likes
                 </Typography>
               </Box>
               
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <PlayArrowIcon sx={{ color: "#2196f3", fontSize: '18px' }} />
+                <PlayArrowIcon sx={{ color: "#ff9800", fontSize: '18px' }} />
                 <Typography sx={{ color: "#fff", fontSize: "14px" }}>
                   {formatNumber(song.playCount)} plays
                 </Typography>
@@ -296,14 +295,14 @@ export default function SongAnalyticsPage() {
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <ThumbUpIcon sx={{ color: "#4caf50", fontSize: '18px' }} />
+                <ThumbUpIcon sx={{ color: "#ff9800", fontSize: '18px' }} />
                 <Typography sx={{ color: "#fff", fontSize: "14px" }}>
                   {formatNumber(song.upvotes)} upvotes
                 </Typography>
               </Box>
               
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <ThumbDownIcon sx={{ color: "#f44336", fontSize: '18px' }} />
+                <ThumbDownIcon sx={{ color: "#ff9800", fontSize: '18px' }} />
                 <Typography sx={{ color: "#fff", fontSize: "14px" }}>
                   {formatNumber(song.downvotes)} downvotes
                 </Typography>
@@ -320,7 +319,7 @@ export default function SongAnalyticsPage() {
       key={category.title}
       sx={{
         border: "1px solid var(--borderColor1)",
-        borderRadius: "12px",
+        borderRadius: "0px",
         backgroundColor: "#020202",
         overflow: "hidden",
         height: "100%",
@@ -364,23 +363,18 @@ export default function SongAnalyticsPage() {
         <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <Box className={styles.layer}>
             <Box className={styles.layerTop}>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography className={styles.layerTopIntroText}>
-                  Song Analytics
-                </Typography>
+              <Box className={styles.layerTopSearch} sx={{ width: "30%"}}>
+                <CustomSearchField
+                  placeholder="Search songs or artists..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </Box>
-            </Box>
-            <Box className={styles.layerTopSearch}>
-              <CustomSearchField
-                placeholder="Search songs or artists..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
             </Box>
           </Box>
 
           {/* Analytics Categories */}
-          <Box sx={{ height: "calc(100vh - 200px)", overflowY: "auto", paddingRight: "10px" }}>
+          <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
             {loading ? (
               <Spinner />
             ) : (

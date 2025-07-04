@@ -152,33 +152,32 @@ const handleTribeDialogSuccess = () => {
             <Box className={styles.layer}>
               <Box className={styles.layerTop}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography className={styles.layerTopIntroText}>
-                    Tribes
-                  </Typography>
-                  <Button 
-                    className="callToActionButton"
-                    onClick={() => setDialogOpen(true)}
-                  >
-                    Add Tribe
-                  </Button>
+                  <Box className={styles.layerTopSearch}>
+                    <CustomSearchField
+                      placeholder="Search tribes by name."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </Box>
+                  <Box sx={{ paddingRight: "20px" }}>
+                    <Button 
+                      className="callToActionButton"
+                      onClick={() => setDialogOpen(true)}
+                    >
+                      Add Tribe
+                    </Button>
+                  </Box>
                 </Box>
               </Box>
-              <Box className={styles.layerTopSearch}>
-                <CustomSearchField
-                  placeholder="Search tribes by name."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </Box>
+              
             </Box>
 
             {/* Users Table */}
-            <Box sx={{ height: "600px", overflowY: "auto", paddingRight: "10px" }}>
               {loading && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                  <Spinner />
-                </Box>
+                <Spinner />
               )}
+
+
               
               {!loading && filteredTribes.length === 0 ? (
                 <Box className={styles.centerYX}>
@@ -189,54 +188,55 @@ const handleTribeDialogSuccess = () => {
                 </Box>
               ) : (
                 !loading && (
-                  <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="tribes table">
-                      <TableHead >
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Description</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filteredTribes.map((tribe) => (
-                          <TableRow
-                            key={tribe.tribeId}
-                            sx={{ 
-                              '&:last-child td, &:last-child th': { border: 0 },
-                              cursor: 'pointer'
-                            }}
-                            onClick={() => {
-                              setSelectedTribe(tribe);
-                              setPopupOpen(true);
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
-                                <Typography sx={{ fontWeight: 'bold', color: 'gray' }}>
-                                  {tribe.tribeId} 
-                                </Typography>
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Typography sx={{ color: '#fff' }}>
-                                {tribe.name}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography sx={{ color: '#fff' }}>
-                                {tribe.description || "No description available"}
-                              </Typography>
-                            </TableCell>
+                  <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
+                    <TableContainer component={Paper} sx={{borderRadius: "0px"}}>
+                      <Table sx={{ minWidth: 650 }} aria-label="tribes table">
+                        <TableHead >
+                          <TableRow>
+                              <TableCell></TableCell>
+                              <TableCell>Name</TableCell>
+                              <TableCell>Description</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                          {filteredTribes.map((tribe) => (
+                            <TableRow
+                              key={tribe.tribeId}
+                              sx={{ 
+                                '&:last-child td, &:last-child th': { border: 0 },
+                                cursor: 'pointer'
+                              }}
+                              onClick={() => {
+                                setSelectedTribe(tribe);
+                                setPopupOpen(true);
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
+                                  <Typography sx={{ fontWeight: 'bold', color: 'gray' }}>
+                                    {tribe.tribeId} 
+                                  </Typography>
+                                </Box>
+                              </TableCell>
+                              <TableCell>
+                                <Typography sx={{ color: '#fff' }}>
+                                  {tribe.name}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography sx={{ color: '#fff' }}>
+                                  {tribe.description || "No description available"}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Box>
                 )
               )}
-            </Box>
           </Box>
         </Box>
         <TribeEditDialog 

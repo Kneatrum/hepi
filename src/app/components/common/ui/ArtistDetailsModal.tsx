@@ -2,6 +2,11 @@
 import { Artist } from '../../../types';
 import { Box, Typography, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import XIcon from '@mui/icons-material/X';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import zIndex from '@mui/material/styles/zIndex';
+
 
 interface ArtistDetailsModalProps {
   artist: Artist | null;
@@ -22,12 +27,14 @@ const style = {
   bgcolor: 'background.paper',
   border: '1px solid',
   borderColor: 'secondary.main',
-  borderRadius: 2,
+  borderRadius: 0,
   boxShadow: 24,
   p: 4,
   color: 'text.primary',
   maxHeight: MODAL_MAX_HEIGHT, 
-  overflowY: 'auto',        
+  overflowY: 'auto',     
+  zIndex: zIndex.drawer + 1,
+   
 };
 
 const ArtistDetailsModal: React.FC<ArtistDetailsModalProps> = ({ artist, onClose }) => {
@@ -49,7 +56,7 @@ const ArtistDetailsModal: React.FC<ArtistDetailsModalProps> = ({ artist, onClose
         <CloseIcon />
       </IconButton>
 
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 4, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 4, alignItems: 'left' }}>
         {/* Image on the left */}
         <Box sx={{ flexShrink: 0, textAlign: { xs: 'center', sm: 'left' } }}>
           <Box
@@ -66,6 +73,42 @@ const ArtistDetailsModal: React.FC<ArtistDetailsModalProps> = ({ artist, onClose
               boxShadow: 3,
             }}
           />
+
+          <Box sx={{ mt: 3, textAlign: { xs: 'center', sm: 'left', backgroundColor: 'rgba(158, 157, 157, 0.16)', padding: "10px", borderRadius: '12px'}}}>
+            <Box sx={{ mb: 2, display: 'flex', alignItems: 'baseline', gap: 2 }}>
+              <Typography variant="subtitle1" sx={{ color: 'secondary.main', minWidth: '50px' }}>
+                Country:
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'text.primary' }}>
+                {artist.country.name} ({artist.country.region})
+              </Typography>
+            </Box>
+
+            <Box sx={{ mb: 2, display: 'flex', alignItems: 'baseline', gap: 2  }}>
+              <Typography variant="subtitle1" sx={{ color: 'secondary.main', minWidth: '64px' }}>
+                Tribe:
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'text.primary'}}>
+                {artist.tribe.name}
+              </Typography>
+            </Box>
+          </Box>
+
+
+          <Box sx={{ mt: 3, textAlign: 'left', backgroundColor: 'rgba(158, 157, 157, 0.16)', padding: 2, borderRadius: '12px'}}>
+            {artist.name}'s social media
+            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center', gap: 2, mt: 2 }}>
+              <IconButton component="a" href={`https://x.com/${artist.name.replace(/\s+/g, '')}`} target="_blank" rel="noopener noreferrer" sx={{ color: 'text.primary' }}>
+                <XIcon />
+              </IconButton>
+              <IconButton component="a" href={`https://facebook.com/${artist.name.replace(/\s+/g, '')}`} target="_blank" rel="noopener noreferrer" sx={{ color: 'text.primary' }}>
+                <FacebookIcon />
+              </IconButton>
+              <IconButton component="a" href={`https://instagram.com/${artist.name.replace(/\s+/g, '')}`} target="_blank" rel="noopener noreferrer" sx={{ color: 'text.primary' }}>
+                <InstagramIcon />
+              </IconButton>
+            </Box>
+          </Box>
         </Box>
 
         {/* Details on the right */}
@@ -83,23 +126,7 @@ const ArtistDetailsModal: React.FC<ArtistDetailsModalProps> = ({ artist, onClose
             </Typography>
           </Box>
 
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" sx={{ color: 'secondary.main', fontWeight: 'bold' }}>
-              Country
-            </Typography>
-            <Typography variant="body1" sx={{ color: 'text.primary' }}>
-              {artist.country.name} ({artist.country.region})
-            </Typography>
-          </Box>
-
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" sx={{ color: 'secondary.main', fontWeight: 'bold' }}>
-              Culture / Tribe
-            </Typography>
-            <Typography variant="body1" sx={{ color: 'text.primary' }}>
-              {artist.tribe.name}
-            </Typography>
-          </Box>
+          
 
           <Box>
             <Typography variant="subtitle1" sx={{ color: 'secondary.main', fontWeight: 'bold' }}>
