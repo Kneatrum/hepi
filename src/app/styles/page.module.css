@@ -199,6 +199,7 @@ a.secondary {
 
 .dashboard {
   /* padding: 100px 40px; */
+  padding-top: 80px;;
   height: 100vh;
   display: flex;
   flex-direction: column;

@@ -13,8 +13,8 @@ export default function AdminDashboard({ children }: Readonly<{ children: React.
           <Box sx={{ 
             flexGrow: 1, 
             overflowY: "auto", 
-            height: "100vh", 
-            paddingTop: "80px"
+            height: "calc(100vh - 80px)",
+            overflowX: "hidden",
           }} >
             {children}
           </Box>

@@ -43,7 +43,7 @@ export default function Page() {
 
         if (!accessToken) {
           console.error("No access token available");
-          setLoading(false);
+          // setLoading(false);
           return;
         }
         
@@ -83,12 +83,12 @@ export default function Page() {
 
   useEffect(() => {
       const fetchVotes = async () => {
-        setLoading(true);
+        // setLoading(true);
   
         if (!accessToken) {
           console.error("No access token available");
-          setLoading(false);
-          router.push('/login');
+          // setLoading(false);
+          // router.push('/login');
           return;
         }
   
@@ -114,7 +114,7 @@ export default function Page() {
           // setError(err instanceof Error ? err.message : 'Failed to fetch votes');
           console.error('Error fetching votes:', err);
         } finally {
-          setLoading(false);
+          // setLoading(false);
         }
         
       };
@@ -163,16 +163,8 @@ export default function Page() {
       <Box className={styles.home} sx={{padding:"0px"}}>
         {/* Top Section */}
         <Box sx={{display:"flex", flexDirection:"column", gap:"20px"}}>
-          <Box sx={{ display: "flex", marginTop: "50px", gap: "20px", paddingLeft: "20px", paddingRight: "20px" }}>
-            {/* <Box className={styles.layerTop}>
-              <Typography className={styles.layerTopIntroText} >
-                What&apos;s your mood!
-              </Typography>
-              <Typography className={styles.layerTopIntroTextInfo} >
-                Our recommendation based on your music taste.
-              </Typography>
-            </Box> */}
-            <Box className={styles.layerTopSearch}>
+          <Box className={styles.layer}>
+            <Box className={styles.layerTop} sx={{ width: "30%"}}>
               <CustomSearchField
                 placeholder="Search a song..."
                 value={searchQuery}
@@ -181,28 +173,20 @@ export default function Page() {
             </Box>
           </Box>
 
-          {/* Songs box */}
-          <Box sx={{ 
-            height: "calc(100vh - 220px)", // 220px = Navbar + media player + padding heights
-            overflowY: "auto", 
-            paddingRight: "10px",
-            '@media (max-width: 1400px)': {
-              height: 'calc(100vh - 200px)', // Slightly less spacing on smaller screens
-            }
-          }}>
-            {/* Suggested Singers */}
-            <Box className={styles.gridContainer} sx={{ mt: 3 }}>
-              { loading && (
-                <Spinner />
-              )}
-              {!loading && filteredSongs.length === 0 ? (
-                <Box className={styles.centerYX}>
-                  <InfoCard
-                    title="No songs found"
-                    description="Try searching with a different keyword or check back later."
-                  />
-                </Box>
-              ) : (
+          { loading && (
+            <Spinner />
+          )}
+
+          {!loading && filteredSongs.length === 0 ? (
+            <Box className={styles.centerYX}>
+              <InfoCard
+                title="No songs found"
+                description="Try searching with a different keyword or check back later."
+              />
+            </Box>
+          ) : ( !loading && (
+            <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px"}}>
+              <Box className={styles.gridContainer} sx={{ mt: 3 }}>
                 <SongCard
                   currentSongIndex={currentSongIndex}
                   songs={filteredSongs}
@@ -212,11 +196,9 @@ export default function Page() {
                   userRole={userRole ?? undefined}
                   adminMode={false}
                 />
-              )}
-
-             
+              </Box>
             </Box>
-          </Box>
+            ))}
         </Box>
       </Box>
       {filteredSongs.length > 0 && userID && userRole && (

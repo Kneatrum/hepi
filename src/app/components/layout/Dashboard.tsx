@@ -9,14 +9,13 @@ export default function Dashboard({children}: Readonly<{children: React.ReactNod
   return (
     <Box className={styles.dashboard}>
       <Navbar />
-      <Box sx={{ display: "flex", overflow: "hidden" }}>
+      <Box sx={{ display: "flex", gap: 2, overflow: "hidden" }}>
         <UserSidebar />
         <Box sx={{ 
           flexGrow: 1, 
-          p: 3, 
-          width: "86%",
           overflowY: "auto",
-          height: "calc(100vh)"
+          height: "calc(100vh - 80px)",
+          overflowX: "hidden",
         }} >
           {children}
         </Box>

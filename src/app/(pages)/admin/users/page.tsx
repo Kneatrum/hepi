@@ -198,7 +198,7 @@ export default function Page() {
               ) : (
                 !loading && (
                   <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
-                    <TableContainer component={Paper}>
+                    <TableContainer component={Paper} sx={{ borderRadius: "0px"}}>
                       <Table sx={{ minWidth: 650 }} aria-label="users table">
                         <TableHead >
                           <TableRow>

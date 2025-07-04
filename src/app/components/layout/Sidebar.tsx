@@ -42,7 +42,7 @@ export default function Sidebar() {
         display: { xs: 'none', md: 'block' },
       }}
     >
-      {links.map(({ text, href, icon }, index) => {
+      {links.map(({ text, href, icon }) => {
         const isActive = pathname === href;
 
         return (
@@ -51,7 +51,6 @@ export default function Sidebar() {
               component="a"
               className={isActive ? "callToActionButton" : ""}
               sx={{
-                mt: index === 0 ? '90px' : 0,
                 bgcolor: isActive ? "yellow" : "transparent",
                 borderRadius: 1,
                 "&:hover": {
