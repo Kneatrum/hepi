@@ -99,7 +99,8 @@ export default function Page() {
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [createArtistDialogOpen, setCreateArtistDialogOpen] = useState(false);
+  // const router = useRouter();
   // const [popupOpen, setPopupOpen] = useState(false);
 
 
@@ -121,11 +122,7 @@ export default function Page() {
   
     fetchArtists();
   }, []);
-
-  const router = useRouter();
-    const handleBackToArtistsClick = () => {
-      router.push("/admin/artists/create");
-    };
+ 
 
   const handleArtistDialogSuccess = () => {
     console.log('New artist created');
@@ -156,7 +153,7 @@ export default function Page() {
                 <Box sx={{ paddingRight: "20px" }}>
                   <Button 
                     className="callToActionButton"
-                    onClick={handleBackToArtistsClick}
+                    onClick={() => setCreateArtistDialogOpen(true)}
                   >
                   Create Artists
                   </Button>
@@ -266,8 +263,8 @@ export default function Page() {
           }}
         /> */}
         <CreateArtistDialog
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
+          open={createArtistDialogOpen}
+          onClose={() => setCreateArtistDialogOpen(false)}
           onSuccess={handleArtistDialogSuccess}
         />
       </Box>

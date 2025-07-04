@@ -247,7 +247,7 @@ export default function CreateCountryDialog({
     >
       <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center'}}>
         <Typography variant="h6" component="div">
-          Add Genre
+          Add Country
         </Typography>
         <IconButton
           aria-label="close"

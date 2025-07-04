@@ -1,17 +1,17 @@
 "use client";
 import { useState, ChangeEvent, SyntheticEvent, useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import styles from "../../../styles/page.module.css";
-import { Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Box,
-    Typography,
-    Button,
-    IconButton,
-    ThemeProvider,
-    createTheme, 
+
+import { 
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  ThemeProvider,
+  createTheme, 
 } from "@mui/material";
 import CustomField from "../CustomFields/CustomField";
 import SubmitButton from "../CustomButtons/SubmitButton";
@@ -130,14 +130,28 @@ const darkYellowTheme = createTheme({
   },
 });
 
+interface CountryApiResponse {
+  content: Country[];
+  totalPages: number;
+  totalElements: number;
+  last: boolean;
+  size: number;
+  number: number;
+  sort: string;
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
+  pageable: string;
+}
+
 
 interface ArtistFormData {
-    id?: number;
-    name: string;
-    biography: string;
-    thumbnailUrl: string;
-    countryId: number;
-    tribeId: number;
+  id?: number;
+  name: string;
+  biography: string;
+  thumbnailUrl: string;
+  countryId: number;
+  tribeId: number;
 }
 
 interface CreateArtistDialogProps {
@@ -147,20 +161,20 @@ interface CreateArtistDialogProps {
 }
 
 export default function CreateArtistDialog({
-    open,
-    onClose,
-    onSuccess,
+  open,
+  onClose,
+  onSuccess,
 }: CreateArtistDialogProps ) {
     const { accessToken } = useSession();
     // const router = useRouter();
 
     const [formData, setArtistFormData] = useState<ArtistFormData>({
-        id: 0,
-        name: "",
-        biography: "",
-        thumbnailUrl: "",
-        countryId: 0,
-        tribeId: 0,
+      id: 0,
+      name: "",
+      biography: "",
+      thumbnailUrl: "",
+      countryId: 0,
+      tribeId: 0,
     });
 
     const [error, setError] = useState<string>("");
@@ -172,34 +186,48 @@ export default function CreateArtistDialog({
     const [selectedTribe, setSelectedTribe] = useState<Tribe | null>(null);
 
     useEffect(() => {
+
+      function extractCountries(response: CountryApiResponse): Country[] {
+        return response.content.map(({ createdAt, updatedAt, createdBy, lastModifiedBy, version, countryId, name, code, region }) => ({
+          createdAt,
+          updatedAt,
+          createdBy,
+          lastModifiedBy,
+          version,
+          countryId,
+          name,
+          code,
+          region
+        }));
+      }
+
         async function fetchCountries() {
-            try {
-                const res = await fetch(
-                    "https://music-backend-production-99a.up.railway.app/api/v1/countries"
-                );
-                const data = await res.json();
-                if (data) {
-                    setExistingCountries(data);
-                    console.log("countries>>>", data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch countries:", error);
+          try {
+            const res = await fetch(
+              "https://music-backend-production-99a.up.railway.app/api/v1/countries"
+            );
+            const data = await res.json();
+            if (data) {
+              const countries = extractCountries(data);
+              setExistingCountries(countries);
             }
+          } catch (error) {
+            console.error("Failed to fetch countries:", error);
+          }
         }
 
         async function fetchTribes() {
-            try {
-                const res = await fetch(
-                    "https://music-backend-production-99a.up.railway.app/api/v1/tribes"
-                );
-                const data = await res.json();
-                if (data) {
-                    setExistingTribes(data);
-                    console.log("tribes>>>", data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch tribes:", error);
+          try {
+            const res = await fetch(
+              "https://music-backend-production-99a.up.railway.app/api/v1/tribes"
+            );
+            const data = await res.json();
+            if (data) {
+              setExistingTribes(data);
             }
+          } catch (error) {
+            console.error("Failed to fetch tribes:", error);
+          }
         }
 
         fetchCountries();
@@ -236,175 +264,168 @@ export default function CreateArtistDialog({
       };
 
     const handleChange = (field: keyof ArtistFormData) => (e: ChangeEvent<HTMLInputElement>) => {
-        setArtistFormData({ ...formData, [field]: e.target.value });
+      setArtistFormData({ ...formData, [field]: e.target.value });
     };
 
     const resetForm = () => {
-        setArtistFormData({
-            id: 0,
-            name: "",
-            biography: "",
-            thumbnailUrl: "",
-            countryId: 0,
-            tribeId: 0,
-        });
-        setError("");
-        setSuccess("");
+      setArtistFormData({
+        id: 0,
+        name: "",
+        biography: "",
+        thumbnailUrl: "",
+        countryId: 0,
+        tribeId: 0,
+      });
+      setError("");
+      setSuccess("");
     };
 
     const handleClose = () => {
-        if (!isSubmitting) {
-            resetForm();
-            onClose();
-        }
+      if (!isSubmitting) {
+        resetForm();
+        onClose();
+      }
     };
 
     const handleSubmit = async () => {
-        setError("");
-        setSuccess("");
-        setIsSubmitting(true);
+      setError("");
+      setSuccess("");
+      setIsSubmitting(true);
 
-        if (!formData.name || !formData.biography || !formData.countryId || !formData.tribeId || !formData.thumbnailUrl) {
-            setError("Please fill all required fields.");
-            setIsSubmitting(false);
-            return;
+      if (!formData.name || !formData.biography || !formData.countryId || !formData.tribeId || !formData.thumbnailUrl) {
+        setError("Please fill all required fields.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "https://music-backend-production-99a.up.railway.app/api/v1/artists",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: accessToken ? `Bearer ${accessToken}` : "",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setSuccess("Artist successfully created!");
+          if (onSuccess) onSuccess(data);
+          setTimeout(() => onClose(), 1500);
+        } else {
+          setError(data.message || "Artist creation failed.");
         }
-
-        try {
-            const response = await fetch(
-                "https://music-backend-production-99a.up.railway.app/api/v1/artists",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: accessToken ? `Bearer ${accessToken}` : "",
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
-            const data = await response.json();
-
-            if (response.ok) {
-                setSuccess("Artist successfully created!");
-                if (onSuccess) onSuccess(data);
-                setTimeout(() => onClose(), 1500);
-            } else {
-                setError(data.message || "Artist creation failed.");
-            }
-        } catch (err) {
-            console.error("Error:", err);
-            setError("Network error. Please try again.");
-        } finally {
-            setIsSubmitting(false);
-        }
+      } catch (err) {
+        console.error("Error:", err);
+        setError("Network error. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
     };
 
     return (
-        <ThemeProvider theme={darkYellowTheme}>
-            <Dialog 
-                open={open} 
-                onClose={handleClose}
-                maxWidth="md"
-                //   fullWidth
-                PaperProps={{
-                    sx: {
-                    borderRadius: 2,
-                    minHeight: '500px',
-                    }
-                }}
-            >
-        
-            <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center'}}>
+      <ThemeProvider theme={darkYellowTheme}>
+        <Dialog 
+          open={open} 
+          onClose={handleClose}
+          maxWidth="md"
+          //   fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: 2,
+              minHeight: '500px',
+            }
+          }}
+        >
+      
+          <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center'}}>
             <Typography variant="h6" component="div">
-            Add Artist
+              Add Artist
             </Typography>
             <IconButton
-                aria-label="close"
-                onClick={handleClose}
-                disabled={isSubmitting}
-                sx={{
-                    color: (theme) => theme.palette.grey[500],
-                }}
-                >
-                <CloseIcon />
+              aria-label="close"
+              onClick={handleClose}
+              disabled={isSubmitting}
+              sx={{ color: (theme) => theme.palette.grey[500],}}>
+              <CloseIcon />
             </IconButton>
-            </DialogTitle>
+          </DialogTitle>
 
-            <DialogContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5, pt: 1, mt: 5 }}>
-                    <CustomField
-                        label="Full Name"
-                        placeholder="John Doe"
-                        type="text"
-                        value={formData.name}
-                        onChange={handleChange("name")}
-                    />
-                    <CustomField
-                        label="Biography"
-                        placeholder="Short bio about the artist"
-                        type="text"
-                        value={formData.biography}
-                        onChange={handleChange("biography")}
-                    />
-                    <CustomField
-                        label="Thumbnail URL"
-                        placeholder="https://..."
-                        type="url"
-                        value={formData.thumbnailUrl}
-                        onChange={handleChange("thumbnailUrl")}
-                    />
+          <DialogContent sx={{ p: 3 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5, pt: 1, mt: 5 }}>
+              <CustomField
+                label="Full Name"
+                placeholder="John Doe"
+                type="text"
+                value={formData.name}
+                onChange={handleChange("name")}
+              />
+              <CustomField
+                label="Biography"
+                placeholder="Short bio about the artist"
+                type="text"
+                value={formData.biography}
+                onChange={handleChange("biography")}
+              />
+              <CustomField
+                label="Thumbnail URL"
+                placeholder="https://..."
+                type="url"
+                value={formData.thumbnailUrl}
+                onChange={handleChange("thumbnailUrl")}
+              />
 
-                    <CustomAutocomplete
-                        label="Country"
-                        placeholder="Select country"
-                        options={existingCountries}
-                        value={selectedCountry}
-                        onChange={handleCountryChange}
-                        getOptionLabel={(option) => typeof option === 'string' ? option : option.name}
-                        freeSolo
-                    />
+              <CustomAutocomplete
+                placeholder="Select country"
+                options={existingCountries}
+                value={selectedCountry}
+                onChange={handleCountryChange}
+                getOptionLabel={(option) => typeof option === 'string' ? option : option.name}
+                freeSolo
+              />
 
-                    <CustomAutocomplete
-                        label="Tribe"
-                        placeholder="Select tribe"
-                        options={existingTribes}
-                        value={selectedTribe}
-                        onChange={handleTribeChange}
-                        getOptionLabel={(option) => typeof option === 'string' ? option : option.name}
-                        freeSolo
-                    />
+              <CustomAutocomplete
+                placeholder="Select tribe"
+                options={existingTribes}
+                value={selectedTribe}
+                onChange={handleTribeChange}
+                getOptionLabel={(option) => typeof option === 'string' ? option : option.name}
+                freeSolo
+              />
 
-                    
-                    
-                        
-                    {error && (
-                    <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-                        {error}
-                    </Typography>
-                    )}
-                    
-                    {success && (
-                    <Typography color="success.main" variant="body2" sx={{ mt: 1 }}>
-                        {success}
-                    </Typography>
-                    )}
-                </Box>
-            </DialogContent>
-            <DialogActions sx={{ borderTop: '1px solid #333', p: 3,  display: 'flex', justifyContent: 'space-between' }}>
-                <Button 
-                    variant="outlined"
-                    onClick={handleClose} 
-                    disabled={isSubmitting}
-                >
-                    Cancel
-                </Button>
-                <SubmitButton 
-                    label={isSubmitting ? "Submitting..." : "Submit Artist"}
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                />
-            </DialogActions>
-            </Dialog>
-        </ThemeProvider>
+                  
+              {error && (
+                <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                  {error}
+                </Typography>
+              )}
+              
+              {success && (
+                <Typography color="success.main" variant="body2" sx={{ mt: 1 }}>
+                  {success}
+                </Typography>
+              )}
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ borderTop: '1px solid #333', p: 3,  display: 'flex', justifyContent: 'space-between' }}>
+            <Button 
+              variant="outlined"
+              onClick={handleClose} 
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <SubmitButton 
+              label={isSubmitting ? "Submitting..." : "Submit Artist"}
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            />
+          </DialogActions>
+        </Dialog>
+      </ThemeProvider>
     );
 }
