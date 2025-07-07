@@ -59,7 +59,7 @@ interface SongCardProps {
   currentSongIndex?: number;
   votes: VotesState;
   setVotes: React.Dispatch<React.SetStateAction<VotesState>>;
-  commentsData: IndexedComments;
+  commentsData: IndexedComments | null;
   handleSongSelect?: (songId: number) => void;
   userRole?: string;
   adminMode: boolean;
