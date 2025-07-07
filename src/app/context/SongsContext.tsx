@@ -19,7 +19,9 @@ interface SongsContextType {
   error: string | null;
   votes: VotesState;
   setVotes: React.Dispatch<React.SetStateAction<VotesState>>;
-  commentsData: IndexedComments;
+  commentsData: IndexedComments | null;
+  // loading: boolean;
+  // commentsError: string | null;
   // setError: (error: string | null) => void;
   // searchQuery: string;
   // setSearchQuery: (query: string) => void;
