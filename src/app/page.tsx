@@ -90,6 +90,7 @@ export default function Page() {
                   songs={filteredSongs}
                   votes={votes}
                   setVotes={setVotes}
+                  commentsData={null}
                   handleSongSelect={handleSongSelect}
                   userRole={userRole ?? undefined}
                   adminMode={false}
