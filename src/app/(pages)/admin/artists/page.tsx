@@ -20,7 +20,7 @@ import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
 import Spinner from "@/app/components/common/spinners/loading";
 import InfoCard from "@/app/components/common/ui/InfoCard";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 // import ArtistEditDialog from "@/app/components/common/ui/ArtistEditDialog";
 import CreateArtistDialog from "@/app/components/common/dialogs/CreateArtistDialog";

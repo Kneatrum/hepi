@@ -9,119 +9,17 @@ import InfoCard from "./components/common/ui/InfoCard";
 import Spinner from "./components/common/spinners/loading";
 import SongCard from "./components/common/MediaPlayer/SongCard";
 import { useSession } from "@/app/context/SessionContext";
+import { useSongsContext } from "@/app/context/SongsContext";
 import { getUserRole, getUserId } from "./utils/authUtils";
-import { fetchAllSongsParallel, ParsedSong } from "./utils/fetchSongsUtils";
-import { useRouter } from "next/navigation";
-
-
-import { fetchAllVotesPaginated } from "@/app/utils/fetchVotesUtils";
-import { VotesState } from "@/app/utils/fetchVotesUtils";
-import { PaginationOptions } from "@/app/utils/fetchVotesUtils";
-
-
-const songsApiUrl = "https://music-backend-production-99a.up.railway.app/api/v1/songs";
-const votesApiUrl = 'https://music-backend-production-99a.up.railway.app/api/v1/votes';
 
 
 export default function Page() {
-  const [allSongs, setAllSongs] = useState<ParsedSong[]>([]);
-  const [votes, setVotes] = useState<VotesState>({});
-  const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { songs, songsLoading, votes, setVotes, error } = useSongsContext();
+  const [searchQuery, setSearchQuery] = useState("");;
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const { accessToken } = useSession();
   const [userID, setUserID] = useState<number | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const router = useRouter();
-
-
-  useEffect(() => {
-    async function fetchSongs() {
-      try {
-        setLoading(true);
-       
-
-        if (!accessToken) {
-          console.error("No access token available");
-          router.push('/login');
-          return;
-        }
-        
-
-        const result = await fetchAllSongsParallel({
-        baseUrl: songsApiUrl,
-        pageSize: 20,
-        maxConcurrentRequests: 5,
-        requestHeaders: {
-          'Authorization': 'Bearer ' + accessToken
-        },
-        queryParams: {
-          'sort': 'title'
-        }
-      });
-
-      if (result.error) {
-        console.error("Error fetching songs:", result.error);
-      } else {
-        setAllSongs(result.data);
-        setLoading(false);
-      }
-
-
-
-    } catch (error) {
-        console.error("Failed to fetch songs:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-  
-    fetchSongs();
-  }, [ accessToken, router]);
-
-
-
-  useEffect(() => {
-      const fetchVotes = async () => {
-        // setLoading(true);
-  
-        if (!accessToken) {
-          console.error("No access token available");
-          // setLoading(false);
-          router.push('/login');
-          return;
-        }
-  
-        const options: PaginationOptions = {
-          baseUrl: votesApiUrl,
-          pageSize: 20, // Adjust based on your API's optimal page size
-          maxConcurrentRequests: 3, // Limit concurrent requests
-          headers: accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {},
-          queryParams: {
-            // Add any additional query parameters here
-            // sortBy: 'createdAt',
-            // order: 'desc'
-          }
-        };
-  
-      
-        try {
-          const result = await fetchAllVotesPaginated(options);
-          
-          setVotes(result.votesMap);
-          console.log(`Loaded ${result.totalElements} votes across ${result.totalPages} pages`);
-        } catch (err) {
-          // setError(err instanceof Error ? err.message : 'Failed to fetch votes');
-          console.error('Error fetching votes:', err);
-        } finally {
-          // setLoading(false);
-        }
-        
-      };
-  
-      fetchVotes();
-    }, [ accessToken, router]);
-
 
 
 
@@ -141,13 +39,13 @@ export default function Page() {
   }, [accessToken]);
   
 
-  const filteredSongs = allSongs.filter((song) =>
+  const filteredSongs = songs.filter((song) =>
     song.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
  // Function to handle song selection from the list
   const handleSongSelect = (songId: number) => {
-    const songIndex = allSongs.findIndex(song => song.songId === songId);
+    const songIndex = songs.findIndex(song => song.songId === songId);
     if (songIndex !== -1) {
       setCurrentSongIndex(songIndex);
     }
@@ -173,18 +71,18 @@ export default function Page() {
             </Box>
           </Box>
 
-          { loading && (
+          { !error && songsLoading && (
             <Spinner />
           )}
 
-          {!loading && filteredSongs.length === 0 ? (
+          { !error && !songsLoading && filteredSongs.length === 0 ? (
             <Box className={styles.centerYX}>
               <InfoCard
                 title="No songs found"
                 description="Try searching with a different keyword or check back later."
               />
             </Box>
-          ) : ( !loading && (
+          ) : ( !error && !songsLoading && (
             <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px"}}>
               <Box className={styles.gridContainer} sx={{ mt: 3 }}>
                 <SongCard

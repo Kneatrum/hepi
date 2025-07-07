@@ -1,0 +1,187 @@
+"use client";
+
+import { createContext, useContext, useEffect, useState, ReactNode,  } from "react";
+import { ParsedSong } from "@/app/utils/fetchSongsUtils";
+import { fetchAllSongsParallel } from "@/app/utils/fetchSongsUtils";
+import { fetchAllVotesPaginated } from "@/app/utils/fetchVotesUtils";
+import { PaginationOptions } from "@/app/utils/fetchVotesUtils"; // For votes
+import { useCommentPagination, IndexedComments, PaginationConfig } from "../utils/fetchCommentsUtils";
+import { VotesState } from "@/app/utils/fetchVotesUtils";
+import { useSession } from "@/app/context/SessionContext";
+import { useRouter } from "next/navigation";
+
+
+interface SongsContextType {
+  songs: ParsedSong[];
+  // setSongs: (songs: ParsedSong[]) => void;
+  songsLoading: boolean;
+  // setLoading: (loading: boolean) => void;
+  error: string | null;
+  votes: VotesState;
+  setVotes: React.Dispatch<React.SetStateAction<VotesState>>;
+  commentsData: IndexedComments;
+  // setError: (error: string | null) => void;
+  // searchQuery: string;
+  // setSearchQuery: (query: string) => void;
+  // filteredSongs: ParsedSong[];
+}
+
+
+const songsApiUrl = "https://music-backend-production-99a.up.railway.app/api/v1/songs";
+const votesApiUrl = 'https://music-backend-production-99a.up.railway.app/api/v1/votes';
+const commentsApiUrl = 'https://music-backend-production-99a.up.railway.app/api/v1/comments/getComments';
+
+
+const SongsContext = createContext<SongsContextType | undefined>(undefined);
+
+export const SongsProvider = ({ children }: { children: ReactNode }) => {
+  const { accessToken } = useSession();
+  const [ songs, setSongs ] = useState<ParsedSong[]>([]);
+  const [ votes, setVotes ] = useState<VotesState>({});
+  const [ songsLoading, setSongsLoading ] = useState<boolean>(true);
+  const [ error, setError] = useState<string | null>(null);
+  const [commentServiceConfig, setCommentServiceConfig] = useState<PaginationConfig | null>(null);
+  const { commentsData, fetchAllComments } = useCommentPagination(commentServiceConfig ?? undefined);
+
+  const router = useRouter();
+
+  useEffect(() => {
+  if (accessToken) {
+    setCommentServiceConfig({
+      baseUrl: commentsApiUrl,
+      pageSize: 20,
+      maxConcurrentRequests: 5,
+      requestHeaders: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+  }
+}, [accessToken]);
+    
+  useEffect(() => {
+    async function fetchSongs() {
+      try {
+       
+        if (!accessToken) {
+          router.push('/login');
+          return;
+        }
+
+        const result = await fetchAllSongsParallel({
+          baseUrl: songsApiUrl,
+          pageSize: 20,
+          maxConcurrentRequests: 5,
+          requestHeaders: {
+            'Authorization': 'Bearer ' + accessToken
+          },
+          queryParams: {
+            'sort': 'title'
+          }
+        });
+
+        if (result.error) {
+          console.error("Error fetching songs:", result.error);
+        } else {
+          console.log(`Loaded ${result.data.length} songs`);
+          setSongs(result.data);
+          setSongsLoading(false);
+        }
+
+      } catch (error) {
+        console.error("Failed to fetch songs:", error);
+        setError("Something went wrong while fetching songs: " + error);
+        setSongsLoading(false);
+      } finally {
+        setSongsLoading(false);
+      }
+    }
+  
+    fetchSongs();
+  }, [accessToken, router]);
+
+
+
+  useEffect(() => {
+    const fetchVotes = async () => {
+      
+
+      if (!accessToken) {
+        router.push('/login');
+        return;
+      }
+
+      const options: PaginationOptions = {
+        baseUrl: votesApiUrl,
+        pageSize: 20, // Adjust based on your API's optimal page size
+        maxConcurrentRequests: 3, // Limit concurrent requests
+        headers: accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {},
+        queryParams: {
+          // Add any additional query parameters here
+          // sortBy: 'createdAt',
+          // order: 'desc'
+        }
+      };
+
+    
+      try {
+        const result = await fetchAllVotesPaginated(options);
+        setVotes(result.votesMap);
+      } catch (err) {
+        // setError(err instanceof Error ? err.message : 'Failed to fetch votes');
+        console.error('Error fetching votes:', err);
+      } finally {
+        // setLoading(false);
+      }
+      
+    };
+  
+    fetchVotes();
+  }, [ accessToken, router]);
+
+
+  useEffect(() => {
+    if (commentServiceConfig) {
+      fetchAllComments();
+    }
+  }, [commentServiceConfig, fetchAllComments]);
+
+  // if (commentsLoading) return <div>Loading... {progress.current}/{progress.total}</div>;
+  // if (commentsError) return <div>Error: {commentsError.message}</div>;
+  // if (!commentsData) return <div>No data</div>;
+
+  // // Fast lookups
+  // const userComments = CommentUtils.getUserComments(commentsData, 11);
+  // const songComments = CommentUtils.getSongComments(commentsData, 39);
+  // const userCommentsOnSong = CommentUtils.getUserCommentsOnSong(commentsData, 11, 39);
+
+  // console.log("User comments: ", userComments);
+  // console.log("Song comments: ", songComments);
+  // console.log("User comments on song: ", userCommentsOnSong);
+
+
+  return (
+    <SongsContext.Provider
+      value={{
+        songs,
+        songsLoading,
+        error,
+        votes,
+        setVotes,
+        commentsData,
+        // loading,
+        // commentsError,
+        // progress,
+      }}
+    >
+      {children}
+    </SongsContext.Provider>
+  );
+};
+
+export const useSongsContext = () => {
+  const context = useContext(SongsContext);
+  if (!context) {
+    throw new Error("useSongsContext must be used within a SongsProvider");
+  }
+  return context;
+};

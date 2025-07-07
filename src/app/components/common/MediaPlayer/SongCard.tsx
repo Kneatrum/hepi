@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -10,7 +10,8 @@ import {
   Snackbar,
   Alert,
   Grid,
-  Chip
+  Chip,
+  Badge
 } from '@mui/material';
 
 import {
@@ -34,6 +35,10 @@ import { useSession } from "@/app/context/SessionContext";
 // import { useRouter } from 'next/navigation';
 import { VotesState } from '@/app/utils/fetchVotesUtils';
 import { getUserId } from "@/app/utils/authUtils";
+import SongCommentsModal  from '@/app/components/common/modals/SongCommentsModal';
+
+
+import { IndexedComments } from '@/app/utils/fetchCommentsUtils';
 
 interface CommentPayload {
   id: number;
@@ -54,6 +59,7 @@ interface SongCardProps {
   currentSongIndex?: number;
   votes: VotesState;
   setVotes: React.Dispatch<React.SetStateAction<VotesState>>;
+  commentsData: IndexedComments;
   handleSongSelect?: (songId: number) => void;
   userRole?: string;
   adminMode: boolean;
@@ -80,7 +86,7 @@ const theme = createTheme({
   },
 });
 
-const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, setVotes, handleSongSelect, userRole, adminMode }) => {
+const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, setVotes, commentsData, handleSongSelect, userRole, adminMode }) => {
   const [commentDialogOpen, setCommentDialogOpen] = useState<boolean>(false);
   const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
   const [notification, setNotification] = useState<NotificationState>({ 
@@ -91,6 +97,18 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
   const { accessToken } = useSession();
   // const router = useRouter();
   const [userID, setUserID] = useState<number | null>(null);
+  const [commentsModalOpen, setCommentsModalOpen] = useState(false);
+
+  const commentCounts = useMemo(() => {
+    if (!commentsData) return new Map<number, number>();
+
+    const map = new Map<number, number>();
+    for (const [songId, songEntry] of commentsData.songIndex.entries()) {
+      map.set(songId, songEntry.comments.length);
+    }
+    return map;
+  }, [commentsData]);
+
   const [editSongDialogOpen, setEditSongDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -381,19 +399,49 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
                       <IconButton
                         onClick={(e) => {
                           e.stopPropagation();
-                          openCommentDialog(song.songId);
-                        }}
-                        sx={{ 
-                          color: isSelected ? theme.palette.primary.main : 'white',
-                          '&:hover': { 
-                            backgroundColor: isSelected 
-                              ? 'rgba(0, 0, 0, 0.1)' 
-                              : 'rgba(255, 235, 59, 0.1)',
-                            color: isSelected ? theme.palette.primary.main : theme.palette.secondary.main
+                          if(adminMode){
+                            const count = commentCounts.get(song.songId)
+                            if(!count || count <= 0) return
+                              setCommentsModalOpen(true);
+                              setSelectedSongId(song.songId);
+                          } else {
+                            openCommentDialog(song.songId);
                           }
                         }}
+                        sx={{
+                          color: isSelected ? theme.palette.primary.main : 'white',
+                          '&:hover': {
+                            backgroundColor: isSelected
+                              ? 'rgba(0, 0, 0, 0.1)'
+                              : 'rgba(255, 235, 59, 0.1)',
+                            color: isSelected ? theme.palette.primary.main : theme.palette.secondary.main,
+                          },
+                          position: 'relative'
+                        }}
                       >
-                        <Comment />
+                        <Badge
+                          badgeContent={
+                            (() => {
+                              const count = commentCounts.get(song.songId) || 0;
+                              return count > 10 ? '10+' : count;
+                            })()
+                          }
+                          color="secondary"
+                          invisible={(commentCounts.get(song.songId) || 0) <= 0}
+                          sx={{
+                            '& .MuiBadge-badge': {
+                              top: -3,
+                              right: 3,
+                              fontSize: '0.65rem',
+                              height: 18,
+                              minWidth: 18,
+                              backgroundColor: theme.palette.secondary.main,
+                              color: theme.palette.primary.main,
+                            },
+                          }}
+                        >
+                          <Comment />
+                        </Badge>
                       </IconButton>
                       
                       <IconButton
@@ -438,6 +486,13 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
             }}
           />
         )}
+
+        <SongCommentsModal
+          open={commentsModalOpen}
+          onClose={() => setCommentsModalOpen(false)}
+          songId={selectedSongId}
+          data={commentsData}
+        />
 
         <CommentDialog
           open={commentDialogOpen}

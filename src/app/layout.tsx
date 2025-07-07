@@ -3,6 +3,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import localFont from "next/font/local"
 import "./globals.css";
 import { SessionProvider } from "./context/SessionContext";
+import { SongsProvider } from "./context/SongsContext";
 
 const outfit = localFont({
   src: "./fonts/Outfit-VariableFont_wght.ttf",
@@ -20,9 +21,11 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
     <html lang="en">
       <body className={`${outfit.variable}`}>
         <SessionProvider>
-          <AppRouterCacheProvider>
-            {children}
-          </AppRouterCacheProvider>
+          <SongsProvider>
+            <AppRouterCacheProvider>
+              {children}
+            </AppRouterCacheProvider>
+          </SongsProvider>
         </SessionProvider>
       </body>
     </html>
