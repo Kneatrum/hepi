@@ -139,7 +139,7 @@ useEffect(() => {
  
       const songs = await fetchAllSongsWithPagination(config, (current, total) => {
         // setProgress({ current, total });
-        // console.log(`Loaded page ${current} of ${total}`);
+        console.log(`Loaded page ${current} of ${total}`);
       });
       
       if (!abortController.signal.aborted) {
