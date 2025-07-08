@@ -28,6 +28,7 @@ const votesUrl = "https://music-backend-production-99a.up.railway.app/api/v1/vot
 
 interface MediaPlayerProps {
   songs: ParsedSong[];
+  favoriteSongs: ParsedSong[];
   currentSongIndex: number;
   onSongChange: (index: number) => void;
   userID: number | null;
@@ -36,6 +37,7 @@ interface MediaPlayerProps {
 
 export default function MediaPlayer({ 
   songs, 
+  favoriteSongs,
   currentSongIndex,
   onSongChange,
   userID,
@@ -49,7 +51,7 @@ export default function MediaPlayer({
   const [isShuffling, setIsShuffling] = useState(false);
   const [isRepeating, setIsRepeating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [likedSongs, setLikedSongs] = useState<Set<number>>(new Set());
+  const [likedSongIds, setLikedSongIds] = useState<Set<number>>(new Set());
   const [upVotedSongs, setUpVotedSongs] = useState<Set<number>>(new Set());
   const [downVotedSongs, setDownVotedSongs] = useState<Set<number>>(new Set());
   const [shuffleHistory, setShuffleHistory] = useState<number[]>([]);
@@ -60,6 +62,12 @@ export default function MediaPlayer({
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "info" | "warning">("info");
 
   
+  // Initialize and sync local liked state with the prop from context
+  useEffect(() => {
+    const initialLikedIds = new Set(favoriteSongs.map(song => song.songId));
+    setLikedSongIds(initialLikedIds);
+  }, [favoriteSongs]);
+
   // State to track if the target playback duration message has been logged for the current song
   const [hasLoggedTargetPlayback, setHasLoggedTargetPlayback] = useState(false);
 
@@ -87,37 +95,6 @@ export default function MediaPlayer({
   // type QueryResult = {
   //   content: User[];
   // };
-
-
-
-  // Fetch liked songs from backend
-  // useEffect(() => {
-  //   const fetchLikedSongs = async () => {
-  //     try {
-  //       const url = `${favouritesUrl}/${userId}`;
-  //       const response = await fetch(url);
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-
-  //       const data = await response.json();
-  //       const content = data?.content || [];
-
-  //       const likedIds = new Set<number>(
-  //         content
-  //           .map((item: any) => item.song?.songId)
-  //           .filter((id: number | undefined) => id !== undefined)
-  //       );
-
-  //       setLikedSongs(likedIds);
-  //     } catch (error) {
-  //       console.error("Failed to fetch liked songs:", error);
-  //     }
-  //   };
-
-  //   fetchLikedSongs();
-  // }, []);
-
 
   // Fetch user votes from backend
 useEffect(() => {
@@ -566,32 +543,29 @@ const interactWithSong = async (songId: number, type: string) => {
   };
 
   const toggleLike = () => {
-    if (!currentSong) return;
-
-    if (!userID) {
-      console.error("User ID is not set. Cannot add to favorites.");
+    if (!currentSong || !userID || !accessToken) {
+      showSnackbar("Cannot update favorites. User not logged in.", "error");
       return;
     }
 
-    if (!accessToken) {
-      console.error("Access token is not set. Cannot add to favorites.");
-      return;
-    }
+    const songId = currentSong.songId;
+    const isCurrentlyLiked = likedSongIds.has(songId);
 
-    const isCurrentlyLiked = likedSongs.has(currentSong.songId);
-    const newLikedSongs = new Set(likedSongs);
-
+    // Optimistically update the UI for an instant response
+    const newLikedSongIds = new Set(likedSongIds);
     if (isCurrentlyLiked) {
-      newLikedSongs.delete(currentSong.songId);
+      newLikedSongIds.delete(songId);
+      showSnackbar("Removed from favorites", "info");
     } else {
-      newLikedSongs.add(currentSong.songId);
+      newLikedSongIds.add(songId);
+      showSnackbar("Added to favorites!", "success");
     }
-
-    // Update frontend state
-    setLikedSongs(newLikedSongs);
+    setLikedSongIds(newLikedSongIds);
 
     // Sync with backend
-    toggleFavorite(userID, currentSong.songId, isCurrentlyLiked, accessToken);
+    // The third argument to `toggleFavorite` should be the state *before* the toggle.
+    // It tells the backend whether to perform a "delete" or "add" operation.
+    toggleFavorite(userID, songId, isCurrentlyLiked, accessToken);
 };
 
 
@@ -667,10 +641,11 @@ const interactWithSong = async (songId: number, type: string) => {
     isFavorite: boolean,
     accessToken: string
   ) => {
-    const url = `https://music-backend-production-99a.up.railway.app/api/v1/favorites/${userId}/${songId}`;
+    const url = `https://music-backend-production-99a.up.railway.app/api/v1/favorites/add-favorite/${userId}/${songId}`;
+    const deleteUrl = `https://music-backend-production-99a.up.railway.app/api/v1/favorites/${songId}`;
 
     try {  
-      const response = await fetch(url, {
+      const response = await fetch(`${isFavorite ? deleteUrl : url}`, {
         method: isFavorite ? "DELETE" : "POST",
         headers: {
           "Content-Type": "application/json",
@@ -825,7 +800,7 @@ const interactWithSong = async (songId: number, type: string) => {
             />
 
             <IconButton onClick={toggleLike}>
-              {likedSongs.has(currentSong?.songId || 0) ? (
+              {currentSong && likedSongIds.has(currentSong.songId) ? (
                 <FavoriteIcon sx={{ color: "red" }} />
               ) : (
                 <FavoriteBorderIcon sx={{ color: "white" }} />

@@ -8,8 +8,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import CategoryIcon from "@mui/icons-material/Category"; // Genre icon
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
+import HomeIcon from '@mui/icons-material/Home';
 
 const links = [
+  { text: "Songs", href: "/", icon: <HomeIcon /> },
   { text: "Favourites", href: "/user/favourites", icon: <FavoriteIcon /> },
   { text: "Library", href: "/user/library", icon: <VideoLibraryIcon /> },
   { text: "Artists", href: "/user/artists", icon: <PersonIcon /> },

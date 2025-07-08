@@ -14,12 +14,13 @@ import { getUserRole, getUserId } from "./utils/authUtils";
 
 
 export default function Page() {
-  const { songs, songsLoading, votes, setVotes, error } = useSongsContext();
-  const [searchQuery, setSearchQuery] = useState("");;
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const { songs, songsLoading, votes, setVotes, error, favoriteSongs } = useSongsContext();
+  const [ searchQuery, setSearchQuery ] = useState("");
+  const [ currentSongIndex, setCurrentSongIndex] = useState(0);
   const { accessToken } = useSession();
-  const [userID, setUserID] = useState<number | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [ userID, setUserID ] = useState<number | null>(null);
+  const [ userRole, setUserRole ] = useState<string | null>(null);
+
 
 
 
@@ -103,6 +104,7 @@ export default function Page() {
       {filteredSongs.length > 0 && userID && userRole && (
        <MediaPlayer 
           songs={filteredSongs} 
+          favoriteSongs={favoriteSongs}
           currentSongIndex={currentSongIndex}
           onSongChange={handleSongChange}
           userID={userID}

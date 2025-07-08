@@ -1,11 +1,15 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode,  } from "react";
-import { ParsedSong } from "@/app/utils/fetchSongsUtils";
+import { ParsedSong,  } from "@/app/utils/fetchSongsUtils";
 import { fetchAllSongsParallel } from "@/app/utils/fetchSongsUtils";
 import { fetchAllVotesPaginated } from "@/app/utils/fetchVotesUtils";
 import { PaginationOptions } from "@/app/utils/fetchVotesUtils"; // For votes
 import { useCommentPagination, IndexedComments, PaginationConfig } from "../utils/fetchCommentsUtils";
+import { fetchAllSongsWithPagination } from '@/app/utils/fetchFavoriteSongsByUser';
+
+import { getUserId } from "@/app/utils/authUtils";
+
 import { VotesState } from "@/app/utils/fetchVotesUtils";
 import { useSession } from "@/app/context/SessionContext";
 import { useRouter } from "next/navigation";
@@ -20,6 +24,8 @@ interface SongsContextType {
   votes: VotesState;
   setVotes: React.Dispatch<React.SetStateAction<VotesState>>;
   commentsData: IndexedComments | null;
+  favoriteSongs: ParsedSong[];
+  // setFavoriteSongs: (songs: ParsedSong[]) => void;
   // loading: boolean;
   // commentsError: string | null;
   // setError: (error: string | null) => void;
@@ -32,6 +38,7 @@ interface SongsContextType {
 const songsApiUrl = "https://music-backend-production-99a.up.railway.app/api/v1/songs";
 const votesApiUrl = 'https://music-backend-production-99a.up.railway.app/api/v1/votes';
 const commentsApiUrl = 'https://music-backend-production-99a.up.railway.app/api/v1/comments/getComments';
+const favoritesApiUrl = 'https://music-backend-production-99a.up.railway.app/api/v1/favorites';
 
 
 const SongsContext = createContext<SongsContextType | undefined>(undefined);
@@ -44,6 +51,7 @@ export const SongsProvider = ({ children }: { children: ReactNode }) => {
   const [ error, setError] = useState<string | null>(null);
   const [commentServiceConfig, setCommentServiceConfig] = useState<PaginationConfig | null>(null);
   const { commentsData, fetchAllComments } = useCommentPagination(commentServiceConfig ?? undefined);
+  const [favoriteSongs, setFavoriteSongs] = useState<ParsedSong[]>([]);
 
   const router = useRouter();
 
@@ -101,6 +109,58 @@ export const SongsProvider = ({ children }: { children: ReactNode }) => {
     fetchSongs();
   }, [accessToken, router]);
 
+
+useEffect(() => {
+  const abortController = new AbortController();
+
+  if (!accessToken) {
+    router.push('/login');
+    return;
+  }
+
+  const userID = getUserId(accessToken);
+
+  const config = {
+    baseUrl: `${favoritesApiUrl}/${userID}`,
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    },
+    queryParams: {
+      sort: 'createdAt,desc' 
+    },
+    maxConcurrentRequests: 3,
+    pageSize: 20
+  };
+
+  
+  async function fetchData() {
+    // setLoading(true);
+    try {
+ 
+      const songs = await fetchAllSongsWithPagination(config, (current, total) => {
+        // setProgress({ current, total });
+        // console.log(`Loaded page ${current} of ${total}`);
+      });
+      
+      if (!abortController.signal.aborted) {
+        setFavoriteSongs(songs);
+      }
+    } catch (error) {
+      if (!abortController.signal.aborted) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        setError(`Failed to fetch favorites: ${errorMessage}`);
+      }
+    } finally {
+      if (!abortController.signal.aborted) {
+        // setLoading(false);
+      }
+    }
+  }
+  
+  fetchData();
+  
+  return () => abortController.abort();
+}, [accessToken, router, favoritesApiUrl]);
 
 
   useEffect(() => {
@@ -170,6 +230,7 @@ export const SongsProvider = ({ children }: { children: ReactNode }) => {
         votes,
         setVotes,
         commentsData,
+        favoriteSongs
         // loading,
         // commentsError,
         // progress,
