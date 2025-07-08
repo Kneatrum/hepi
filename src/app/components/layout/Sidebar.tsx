@@ -40,6 +40,8 @@ export default function Sidebar() {
         p: 1,
         // Hide on extra-small/small screens, display as block on medium and up.
         display: { xs: 'none', md: 'block' },
+        overflowY: "auto",
+        height: "calc(100vh - 140px)",
       }}
     >
       {links.map(({ text, href, icon }) => {

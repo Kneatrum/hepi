@@ -14,7 +14,7 @@ export default function Dashboard({children}: Readonly<{children: React.ReactNod
         <Box sx={{ 
           flexGrow: 1, 
           overflowY: "auto",
-          height: "calc(100vh - 80px)",
+          height: "calc(100vh - 160px)",
           overflowX: "hidden",
         }} >
           {children}

@@ -32,6 +32,8 @@ export default function UserSidebar() {
         minWidth: 180,
         p: 1,
         display: { xs: 'none', md: 'block' },
+        overflowY: "auto",
+        height: "calc(100vh - 140px)",
       }}
     >
       {links.map(({ text, href, icon }) => {
