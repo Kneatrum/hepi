@@ -5,9 +5,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
-import ShowChartIcon from "@mui/icons-material/ShowChart";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import PersonIcon from "@mui/icons-material/Person";
+import FlagIcon from "@mui/icons-material/Flag";
+import PersonPinCircleIcon from "@mui/icons-material/PersonPinCircle";
+import GroupIcon from "@mui/icons-material/Group";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import CategoryIcon from "@mui/icons-material/Category";
+import SecurityIcon from "@mui/icons-material/Security";
 import AlbumIcon from "@mui/icons-material/Album";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import Link from "next/link"; 
 import Image from "next/image";
@@ -15,12 +21,18 @@ import ColorToggleButton from '../common/ui/ColorToggleButton';
 import { getUserRole } from "../../utils/authUtils";
 import { useSession } from "@/app/context/SessionContext";
 
-const pageObjects = [
-  { name: "Library", icon: <VideoLibraryIcon sx={{ width: "20px", height: "20px" }} />, path: "/library" },
-  { name: "Charts", icon: <ShowChartIcon sx={{ width: "20px", height: "20px" }} />, path: "/charts" },
-  { name: "Albums", icon: <AlbumIcon sx={{ width: "20px", height: "20px" }} />, path: "/albums" },
-  { name: "Favorites", icon: <FavoriteBorderIcon sx={{ width: "20px", height: "20px" }} />, path: "/favorites" },
-  { name: "Trending", icon: <TrendingUpIcon sx={{ width: "20px", height: "20px" }} />, path: "/trending" },
+const adminPageObjects = [
+  { text: "Dashboard", icon: <DashboardIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin" },
+  { text: "Artists", icon: <PersonIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/artists" },
+  { text: "Country", icon: <FlagIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/country" },
+  { text: "Tribe", icon: <PersonPinCircleIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/tribe" },
+  { text: "Users", icon: <GroupIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/users" },
+  { text: "Songs", icon: <MusicNoteIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/songs" },
+  { text: "Albums", icon: <AlbumIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/albums" },
+  { text: "Library", icon: <VideoLibraryIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/library" },
+  { text: "Charts", icon: <TrendingUpIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/charts" },
+  { text: "Genre", icon: <CategoryIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/genre" },
+  { text: "Roles & Permissions", icon: <SecurityIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/roles" },
 ];
 
 const ResponsiveAppBar = () => {
@@ -69,10 +81,10 @@ const ResponsiveAppBar = () => {
                 <MenuIcon />
               </IconButton>
               <Menu anchorEl={anchorElNav} open={Boolean(anchorElNav)} onClose={handleCloseNavMenu}>
-                {pageObjects.map(({ name, path }) => (
-                  <MenuItem key={name} onClick={handleCloseNavMenu}>
+                {adminPageObjects.map(({ text, path }) => (
+                  <MenuItem key={text} onClick={handleCloseNavMenu}>
                     <Link href={path} className={pathname === path ? styles.navbarButtonActive : ""}>
-                      <Typography>{name}</Typography>
+                      <Typography>{text}</Typography>
                     </Link>
                   </MenuItem>
                 ))}
@@ -82,18 +94,18 @@ const ResponsiveAppBar = () => {
           
 
           {/* Desktop Navigation */}
-          { isAuthenticated && (
+          {/* { isAuthenticated && (
              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pageObjects.map(({ name, icon, path }) => {
+              {adminPageObjects.map(({ text, icon, path }) => {
                 const isActive = pathname === path;
                 return (
-                  <Link href={path} key={name} className={isActive ? styles.navbarButtonActive : ""}>
+                  <Link href={path} key={text} className={isActive ? styles.navbarButtonActive : ""}>
                     <Button onClick={handleCloseNavMenu} className={styles.navbarButton}>
                       <Box className={styles.navbarButtonBox}>
                         {React.cloneElement(icon, {
                           className: isActive ? styles.navbarIconsActive : styles.navbarIcons,
                         })}
-                        <Typography className={isActive ? styles.pageLinkActive : styles.pageLink}>{name}</Typography>
+                        <Typography className={isActive ? styles.pageLinkActive : styles.pageLink}>{text}</Typography>
                       </Box>
                     </Button>
                   </Link>
@@ -101,7 +113,7 @@ const ResponsiveAppBar = () => {
               })}
             </Box>
  
-          )}
+          )} */}
          
           {/* User Profile Menu or Login */}
           <Box sx={{ flexGrow: 0, ml: "auto", display: "flex", alignItems: "center" }}>
