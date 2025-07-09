@@ -23,6 +23,9 @@ const links = [
 
 export default function UserSidebar() {
   const pathname = usePathname();
+  const isOnSongsPage = pathname === "/";
+  const isOnFavsPage = pathname.startsWith("/user/favourites");
+
   return (
 
     <List
@@ -33,7 +36,8 @@ export default function UserSidebar() {
         p: 1,
         display: { xs: 'none', md: 'block' },
         overflowY: "auto",
-        height: "calc(100vh - 140px)",
+        height: isOnSongsPage || isOnFavsPage
+          ? "calc(100dvh - 10rem)" : "calc(100dvh - 5.625rem)",
       }}
     >
       {links.map(({ text, href, icon }) => {

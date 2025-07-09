@@ -1,11 +1,17 @@
+"use client"
 import styles from "../../styles/page.module.css"
 import { Box } from '@mui/material';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import UserSidebar from "./UserSidebar";
+import { usePathname } from "next/navigation";
 
 
 export default function Dashboard({children}: Readonly<{children: React.ReactNode}>) {
+  const pathname = usePathname();
+  const isOnSongsPage = pathname === "/";
+  const isOnFavsPage = pathname.startsWith("/user/favourites");
+  
   return (
     <Box className={styles.dashboard}>
       <Navbar />
@@ -14,7 +20,8 @@ export default function Dashboard({children}: Readonly<{children: React.ReactNod
         <Box sx={{ 
           flexGrow: 1, 
           overflowY: "auto",
-          height: "calc(100vh - 160px)",
+          height: isOnSongsPage || isOnFavsPage
+          ? "calc(100dvh - 10rem)" : "calc(100dvh - 5.625rem)",
           overflowX: "hidden",
         }} >
           {children}

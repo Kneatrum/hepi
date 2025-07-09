@@ -31,6 +31,8 @@ const links = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const isOnSongsPage = pathname.startsWith("/admin/songs");
+
   return (
     <List
       className="adminColumn"
@@ -38,10 +40,9 @@ export default function Sidebar() {
         width: 180,
         minWidth: 180,
         p: 1,
-        // Hide on extra-small/small screens, display as block on medium and up.
         display: { xs: 'none', md: 'block' },
         overflowY: "auto",
-        height: "calc(100vh - 140px)",
+        height: isOnSongsPage ? "calc(100vh - 10rem)" : "calc(100vh - 5.625rem)",
       }}
     >
       {links.map(({ text, href, icon }) => {
