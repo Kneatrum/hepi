@@ -217,7 +217,7 @@ a.secondary {
 .authCard {
 border: 1px solid var(--borderColor1);
   background-color: inherit !important;
-  min-width: 450px;
+  min-width: 6.26rem;
   height: auto;
   border-radius: 12px !important;
 }

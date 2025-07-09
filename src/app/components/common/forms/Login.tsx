@@ -66,7 +66,11 @@ export default function LoginForm() {
   return (
     <Card className={styles.authCard}>
       <CardContent className={styles.authCardContent}>
-        <Box className={styles.authCardTopImage}>
+        <Box 
+        className={styles.authCardTopImage}
+          sx={{
+            display: { xs: "none", sm: "block" }, // Hide on extra-small screens
+          }}>
           <Image src="/images/hepi_logo.jpg" height={100} width={100} alt="hepi logo" />
         </Box>
         <Box className={styles.authCardInputBox}>
