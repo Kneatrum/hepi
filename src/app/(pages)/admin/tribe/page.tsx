@@ -11,7 +11,12 @@ import {
   TableHead, 
   TableRow, 
   Paper, 
-  Button
+  Button,
+  Chip, 
+  Card, 
+  CardContent,
+  useMediaQuery,
+  useTheme, 
 } from "@mui/material";
 
 import AdminDashboard from "@/app/components/layout/AdminDashboard";
@@ -99,11 +104,11 @@ export default function Page() {
   const [tribes, setTribes] = useState<Tribe[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  // const { accessToken } = useSession();
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedTribe, setSelectedTribe] = useState<Tribe | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     async function fetchTribes() {
@@ -138,6 +143,11 @@ const handleTribeDialogSuccess = () => {
   // Handle success (e.g., refresh list, show notification)
 };
 
+const handleTribeClick = (tribe: Tribe) => {
+  setSelectedTribe(tribe);
+  setPopupOpen(true);
+}
+
   const filteredTribes = tribes.filter((tribe) =>
     tribe.name.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
@@ -146,7 +156,7 @@ const handleTribeDialogSuccess = () => {
   return (
     <ThemeProvider theme={darkYellowTheme}>
       <AdminDashboard>
-        <Box className={styles.home} sx={{padding:"0px"}}>
+        <Box className={styles.home} sx={{padding:"0.625rem"}}>
           {/* Top Section */}
           <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
             <Box className={styles.layer}>
@@ -159,7 +169,7 @@ const handleTribeDialogSuccess = () => {
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </Box>
-                  <Box sx={{ paddingRight: "20px" }}>
+                  <Box >
                     <Button 
                       className="callToActionButton"
                       onClick={() => setDialogOpen(true)}
@@ -179,23 +189,25 @@ const handleTribeDialogSuccess = () => {
 
 
               
-              {!loading && filteredTribes.length === 0 ? (
+              {!loading && filteredTribes.length === 0 && (
                 <Box className={styles.centerYX}>
                   <InfoCard
                     title="No tribe found"
                     description="Try searching with a different keyword or check back later."
                   />
                 </Box>
-              ) : (
-                !loading && (
-                  <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
-                    <TableContainer component={Paper} sx={{borderRadius: "0px"}}>
-                      <Table sx={{ minWidth: 650 }} aria-label="tribes table">
+              )}
+              
+              
+              {  !loading && filteredTribes.length > 0 && !isMobile && (
+                  <Box sx={{ height: "100%", overflow: "hidden" }}>
+                    <TableContainer component={Paper} sx={{ borderRadius: "0px" }}>
+                      <Table sx={{ minWidth: 650, tableLayout: "fixed" }} aria-label="tribes table">
                         <TableHead >
                           <TableRow>
-                              <TableCell></TableCell>
-                              <TableCell>Name</TableCell>
-                              <TableCell>Description</TableCell>
+                            <TableCell sx={{ width: "33.33%" }}>ID</TableCell>
+                            <TableCell sx={{ width: "33.33%" }}>Name</TableCell>
+                            <TableCell sx={{ width: "33.33%" }}>Description</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -206,15 +218,12 @@ const handleTribeDialogSuccess = () => {
                                 '&:last-child td, &:last-child th': { border: 0 },
                                 cursor: 'pointer'
                               }}
-                              onClick={() => {
-                                setSelectedTribe(tribe);
-                                setPopupOpen(true);
-                              }}
+                              onClick={() => { handleTribeClick(tribe) }}
                             >
                               <TableCell component="th" scope="row">
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                   {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
-                                  <Typography sx={{ fontWeight: 'bold', color: 'gray' }}>
+                                  <Typography sx={{ fontWeight: 'bold', color: 'yellow' }}>
                                     {tribe.tribeId} 
                                   </Typography>
                                 </Box>
@@ -225,7 +234,14 @@ const handleTribeDialogSuccess = () => {
                                 </Typography>
                               </TableCell>
                               <TableCell>
-                                <Typography sx={{ color: '#fff' }}>
+                                <Typography
+                                  noWrap
+                                  title={tribe.description || "No description available"}
+                                  sx={{
+                                    color: "#fff",
+                                    maxWidth: "30ch", // Limit width to roughly 30 characters
+                                  }}
+                                >
                                   {tribe.description || "No description available"}
                                 </Typography>
                               </TableCell>
@@ -235,8 +251,98 @@ const handleTribeDialogSuccess = () => {
                       </Table>
                     </TableContainer>
                   </Box>
-                )
               )}
+
+              {!loading && filteredTribes.length > 0 && isMobile && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                      pb: 2,
+                    }}
+                  >
+                  {filteredTribes.map((tribe) => (
+                    <Card
+                      key={tribe.tribeId}
+                      sx={{
+                        cursor: "pointer",
+                        mb: 2,
+                        position: "relative",
+                        overflow: "hidden",
+                        transition: "all 0.2s ease-in-out",
+                        "&:active": {
+                          transform: "scale(0.98)",
+                        },
+                      }}
+                      onClick={() => handleTribeClick(tribe)}
+                    >
+                      <CardContent
+                        sx={{
+                          p: 3,
+                          "&:last-child": { pb: 2 },
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "100%",
+                            gap: 2,
+                          }}
+                        >
+                          <Chip
+                            label={tribe.tribeId}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: "rgb(0, 0, 0)",
+                              color: "white",
+                            }}>
+                          </Chip>
+                          
+                          <Box sx={{flex: 1}}>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: "#fff",
+                                fontWeight: 600,
+                                fontSize: "1.1rem",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {tribe.name}
+                            </Typography>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                  color: "#888",
+                                  fontSize: "0.7rem",
+                                  mt: 1,
+                                  display: "block",
+                                }}
+                              >
+                                Tap for details
+                              </Typography>
+                            </Box>
+
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: "16px",
+                              right: "16px",
+                            }}
+                          >
+                          </Box>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Box>
+                )}
           </Box>
         </Box>
         <TribeEditDialog 

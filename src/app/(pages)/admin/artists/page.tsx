@@ -11,7 +11,13 @@ import {
   TableHead, 
   TableRow, 
   Paper, 
-  Typography 
+  Card, 
+  CardContent, 
+  Avatar,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  Chip,
 } from "@mui/material";
 
 
@@ -20,9 +26,6 @@ import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
 import Spinner from "@/app/components/common/spinners/loading";
 import InfoCard from "@/app/components/common/ui/InfoCard";
-// import { useRouter } from "next/navigation";
-
-// import ArtistEditDialog from "@/app/components/common/ui/ArtistEditDialog";
 import CreateArtistDialog from "@/app/components/common/dialogs/CreateArtistDialog";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ArtistDetailsModal from "@/app/components/common/ui/ArtistDetailsModal";
@@ -94,6 +97,71 @@ const darkYellowTheme = createTheme({
 });
 
 
+// Mobile Artist Card Component
+const MobileArtistCard = ({ artist, index, onClick }: { artist: Artist; index: number; onClick: () => void }) => (
+  <Card
+    onClick={onClick}
+    sx={{
+      cursor: "pointer",
+      mb: 2,
+      position: "relative",
+      overflow: "hidden"
+    }}
+  >
+    <CardContent sx={{ p: 3 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Chip
+          label={index + 1}
+          size="small"
+          variant="outlined"
+          sx={{
+            backgroundColor: "rgb(0, 0, 0)",
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "0.75rem",
+          }}
+        >
+        </Chip>
+        <Avatar
+          sx={{
+            bgcolor: "#FFEB3B",
+            color: "#000",
+            width: 48,
+            height: 48,
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
+          {artist.name.charAt(0).toUpperCase()}
+        </Avatar>
+        <Box sx={{ flex: 1 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: "#FFEB3B",
+              fontWeight: "bold",
+              mb: 0.5,
+              fontSize: "18px",
+            }}
+          >
+            {artist.name}
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#888",
+              fontSize: "14px",
+            }}
+          >
+            Tap to view details
+          </Typography>
+        </Box>
+        
+      </Box>
+    </CardContent>
+  </Card>
+)
+
 export default function Page() {
   const [allArtists, setAllArtists] = useState<Artist[]>([]);
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
@@ -102,7 +170,8 @@ export default function Page() {
   const [createArtistDialogOpen, setCreateArtistDialogOpen] = useState(false);
   // const router = useRouter();
   // const [popupOpen, setPopupOpen] = useState(false);
-
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
   useEffect(() => {
     async function fetchArtists() {
@@ -136,7 +205,7 @@ export default function Page() {
   return (
     <ThemeProvider theme={darkYellowTheme}>
     <AdminDashboard>
-      <Box className={styles.home} sx={{padding:"0px"}}>
+      <Box className={styles.home} sx={{padding:"0.625rem"}}>
         {/* Top Section */}
         <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
           <Box className={styles.layer}>
@@ -150,7 +219,7 @@ export default function Page() {
                   />
                 </Box>
 
-                <Box sx={{ paddingRight: "20px" }}>
+                <Box >
                   <Button 
                     className="callToActionButton"
                     onClick={() => setCreateArtistDialogOpen(true)}
@@ -166,9 +235,7 @@ export default function Page() {
           </Box>
 
           {/* Songs box */}
-          { loading && (
-            <Spinner />
-          )}
+          { loading && <Spinner /> }
 
           {!loading && filteredArtist.length === 0 ? (
             <Box className={styles.centerYX}>
@@ -178,71 +245,84 @@ export default function Page() {
               />
             </Box>
           )  : ( !loading && ( 
-            <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
-              {/* Suggested Singers */}
-              <Box className={styles.gridContainer}>
-                <TableContainer component={Paper} sx={{borderRadius: "0px"}}>
-                  <Table sx={{ minWidth: 650 }} aria-label="countries table">
-                    <TableHead >
-                      <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Country</TableCell>
-                        <TableCell>Region</TableCell>
-                        <TableCell>Culture</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {filteredArtist.map((artist, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{ 
-                            '&:last-child td, &:last-child th': { border: 0 },
-                            cursor: 'pointer'
-                          }}
-                          onClick={() => {
-                            setSelectedArtist(artist);
-                            // setPopupOpen(true);
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
-                              <Typography sx={{ fontWeight: 'bold', color: 'gray' }}>
-                                {index + 1} 
+            !isMobile ? (
+              <Box sx={{ height: "100%", overflow: "hidden" }}>
+                {/* Suggested Singers */}
+                <Box className={styles.gridContainer}>
+                  <TableContainer component={Paper} sx={{borderRadius: "0px"}}>
+                    <Table sx={{ minWidth: 650 }} aria-label="countries table">
+                      <TableHead >
+                        <TableRow>
+                          <TableCell>ID</TableCell>
+                          <TableCell>Name</TableCell>
+                          <TableCell>Country</TableCell>
+                          <TableCell>Region</TableCell>
+                          <TableCell>Culture</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filteredArtist.map((artist, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{ 
+                              '&:last-child td, &:last-child th': { border: 0 },
+                              cursor: 'pointer'
+                            }}
+                            onClick={() => {
+                              setSelectedArtist(artist);
+                              // setPopupOpen(true);
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
+                                <Typography sx={{ fontWeight: 'bold', color: 'yellow'}}>
+                                  {index + 1} 
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell component="th" scope="row">
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
+                                <Typography sx={{ fontWeight: 'bold', color: 'gray' }}>
+                                  {artist.name} 
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Typography sx={{ color: '#fff' }}>
+                                {artist.country.name}
                               </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
-                              <Typography sx={{ fontWeight: 'bold', color: 'gray' }}>
-                                {artist.name} 
+                            </TableCell>
+                            <TableCell>
+                              <Typography sx={{ color: '#fff' }}>
+                                {artist.country.region}
                               </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell>
-                            <Typography sx={{ color: '#fff' }}>
-                              {artist.country.name}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography sx={{ color: '#fff' }}>
-                              {artist.country.region}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography sx={{ color: '#fff' }}>
-                              {artist.tribe.name}
-                            </Typography>
-                          </TableCell>
-                      </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                            </TableCell>
+                            <TableCell>
+                              <Typography sx={{ color: '#fff' }}>
+                                {artist.tribe.name}
+                              </Typography>
+                            </TableCell>
+                        </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
               </Box>
-            </Box>
+            ) : (
+              <>
+                {filteredArtist.map((artist, index) => (
+                  <MobileArtistCard
+                    key={index}
+                    artist={artist}
+                    index={index}
+                    onClick={() => setSelectedArtist(artist)}
+                  />
+                ))}
+              </>
+            )
           )
           )}
 

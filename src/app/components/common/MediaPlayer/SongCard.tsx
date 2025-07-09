@@ -241,7 +241,7 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ padding: 2 }}>
+      <Box >
         <Grid container spacing={3}>
           {songs.map((song, index) => {
             const isSelected = isSongSelected(index);

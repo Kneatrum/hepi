@@ -13,15 +13,17 @@ import {
   TableContainer, 
   TableHead, 
   TableRow, 
-  Paper 
+  Paper,
+  useMediaQuery,
+  useTheme, 
+  Card, 
+  CardContent
 } from "@mui/material";
 
 import AdminDashboard from "@/app/components/layout/AdminDashboard";
 import CustomSearchField from "@/app/components/common/CustomFields/CustomSearchField";
 import Spinner from "@/app/components/common/spinners/loading";
 import InfoCard from "@/app/components/common/ui/InfoCard";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-// import { useRouter } from "next/navigation";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getAllUsers, FormattedUser } from "@/app/utils/fetchUsersUtils";
 import { useSession } from "@/app/context/SessionContext";
@@ -102,6 +104,8 @@ export default function Page() {
   const { accessToken } = useSession();
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<FormattedUser | null>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     async function fetchUsers() {
@@ -140,13 +144,18 @@ export default function Page() {
 
   const getStatusChip = (status: string) => {
     if (status === "ACTIVE") {
-      return <Chip label={status} color="success" size="small" />;
+      return <Chip label={status}  size="small" sx={{ color: "black", backgroundColor: "yellow" }} />;
     } else if (status === "INACTIVE") {
-      return <Chip label={status} color="warning" size="small" />;
+      return <Chip label={status} variant="outlined" size="small" sx={{ color: "white", backgroundColor: "black" }} />;
     } else {
-      return <Chip label={status} color="default" size="small" />;
+      return <Chip label={status} variant="outlined" size="small" sx={{ color: "white", backgroundColor: "black" }} />;
     }
   };
+
+  const handleCountryClick = (user: FormattedUser) => {
+    setSelectedUser(user)
+    setPopupOpen(true)
+  }
 
   const getRoleChip = (roleName: string) => {
     return (
@@ -168,7 +177,7 @@ export default function Page() {
   return (
     <ThemeProvider theme={darkYellowTheme}>
       <AdminDashboard>
-        <Box className={styles.home} sx={{padding:"0px"}}>
+        <Box className={styles.home} sx={{padding:"0.625rem"}}>
           {/* Top Section */}
           <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
             <Box className={styles.layer}>
@@ -188,26 +197,29 @@ export default function Page() {
                 <Spinner />
               )}
               
-              {!loading && filteredUsers.length === 0 ? (
+              {!loading && filteredUsers.length === 0 && (
                 <Box className={styles.centerYX}>
                   <InfoCard
                     title="No users found"
                     description="Try searching with a different keyword or check back later."
                   />
                 </Box>
-              ) : (
-                !loading && (
+              ) }
+              
+              
+                { !loading && filteredUsers.length > 0 &&  !isMobile && (
                   <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
                     <TableContainer component={Paper} sx={{ borderRadius: "0px"}}>
                       <Table sx={{ minWidth: 650 }} aria-label="users table">
                         <TableHead >
                           <TableRow>
+                            <TableCell>ID</TableCell>
                             <TableCell>Name</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Phone Number</TableCell>
+                            {/* <TableCell>Email</TableCell> */}
+                            {/* <TableCell>Phone Number</TableCell> */}
                             <TableCell>Role</TableCell>
                             <TableCell>Status</TableCell>
-                            <TableCell>Country</TableCell>
+                            {/* <TableCell>Country</TableCell> */}
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -225,13 +237,19 @@ export default function Page() {
                             >
                               <TableCell component="th" scope="row">
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                  <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} />
+                                  <Typography sx={{ fontWeight: 'bold', color: 'yellow' }}>
+                                    {user.id}
+                                  </Typography>
+                                </Box>
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                   <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>
                                     {user.firstname} {user.lastname}
                                   </Typography>
                                 </Box>
                               </TableCell>
-                              <TableCell>
+                              {/* <TableCell>
                                 <Typography sx={{ color: '#fff' }}>
                                   {user.email}
                                 </Typography>
@@ -240,25 +258,116 @@ export default function Page() {
                                 <Typography sx={{ color: '#fff' }}>
                                   {user.userPhoneNumber}
                                 </Typography>
-                              </TableCell>
+                              </TableCell> */}
                               <TableCell>
                                 {getRoleChip(user.roleName)}
                               </TableCell>
                               <TableCell>
                                 {getStatusChip(user.roleStatus)}
                               </TableCell>
-                              <TableCell>
+                              {/* <TableCell>
                                 <Typography sx={{ color: '#fff' }}>
                                   {user.country || "Not specified"}
                                 </Typography>
-                              </TableCell>
+                              </TableCell> */}
                             </TableRow>
                           ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </Box>
-                ))}
+                )}
+
+                {!loading && filteredUsers.length > 0 && isMobile && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                      pb: 2,
+                    }}
+                  >
+                  {filteredUsers.map((user) => (
+                    <Card
+                      key={user.id}
+                      sx={{
+                        cursor: "pointer",
+                        mb: 2,
+                        position: "relative",
+                        overflow: "hidden",
+                        transition: "all 0.2s ease-in-out",
+                        "&:active": {
+                          transform: "scale(0.98)",
+                        },
+                      }}
+                      onClick={() => handleCountryClick(user)}
+                    >
+                      <CardContent
+                        sx={{
+                          p: 3,
+                          "&:last-child": { pb: 2 },
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "100%",
+                            gap: 2,
+                          }}
+                        >
+                          <Chip
+                            label={user.id}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: "rgb(0, 0, 0)",
+                              color: "white",
+                            }}>
+                          </Chip>
+                          
+                          <Box sx={{flex: 1}}>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: "#fff",
+                                fontWeight: 600,
+                                fontSize: "1.1rem",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {user.firstname} {user.lastname}
+                            </Typography>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                  color: "#888",
+                                  fontSize: "0.7rem",
+                                  mt: 1,
+                                  display: "block",
+                                }}
+                              >
+                                Tap for details
+                              </Typography>
+                            </Box>
+
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: "16px",
+                              right: "16px",
+                            }}
+                          >
+                          </Box>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Box>
+                )}
           </Box>
         </Box>
         <UserPopup 

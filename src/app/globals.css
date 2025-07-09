@@ -76,7 +76,7 @@ a {
   border: 1px var(--borderColor1) solid;
   background-color: #000 !important;
   border-radius: 8px !important; 
-  padding: 10px !important;
+  padding: 0px !important;
 }
 
 

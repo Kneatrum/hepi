@@ -65,9 +65,9 @@ export default function Page() {
 
   return (
     <AdminDashboard>
-      <Box className={styles.home} sx={{padding:"0px"}}>
+      <Box className={styles.home} sx={{padding:"0.625rem"}}>
         {/* Top Section */}
-        <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
+        <Box sx={{display:"flex", flexDirection:"column"}}>
               <Box className={styles.layer}>
                 <Box className={styles.layerTop}>
                   <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -78,7 +78,7 @@ export default function Page() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                       />
                     </Box>
-                    <Box sx={{ display: "flex", paddingRight: "20px", gap: "20px" }}>
+                    <Box sx={{ display: "flex",  gap: "1rem" }}>
                       <Button 
                         className="callToActionButton"
                         onClick={onCommentsButtonClick}

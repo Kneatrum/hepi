@@ -57,7 +57,7 @@ export default function UserSidebar() {
                 },
               }}
             >
-              <ListItemIcon sx={{ color: isActive ? "black" : "white" }}>
+              <ListItemIcon sx={{ color: isActive ? "#F3B007" : "white" }}>
                 {icon}
               </ListItemIcon>
               <ListItemText

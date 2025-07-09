@@ -55,7 +55,7 @@ export default function Page() {
 
   return (
     <Dashboard>
-      <Box className={styles.home} sx={{padding:"0px"}}>
+      <Box className={styles.home} sx={{padding:"0.625rem"}}>
         {/* Top Section */}
         <Box sx={{display:"flex", flexDirection:"column", gap:"20px"}}>
           <Box className={styles.layer}>

@@ -17,9 +17,10 @@ import AlbumIcon from "@mui/icons-material/Album";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import Link from "next/link"; 
 import Image from "next/image";
-import ColorToggleButton from '../common/ui/ColorToggleButton';
+// import ColorToggleButton from '../common/ui/ColorToggleButton';
 import { getUserRole } from "../../utils/authUtils";
 import { useSession } from "@/app/context/SessionContext";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const adminPageObjects = [
   { text: "Dashboard", icon: <DashboardIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin" },
@@ -35,9 +36,19 @@ const adminPageObjects = [
   { text: "Roles & Permissions", icon: <SecurityIcon sx={{ width: "20px", height: "20px" }} />, path: "/admin/roles" },
 ];
 
+const userPageObjects = [
+  { text: "Songs", icon: <DashboardIcon sx={{ width: "20px", height: "20px" }} />, path: "/" },
+  { text: "Favourites", icon: <PersonIcon sx={{ width: "20px", height: "20px" }} />, path: "/user/favourites" },
+  { text: "Library", icon: <FlagIcon sx={{ width: "20px", height: "20px" }} />, path: "/user/library" },
+  { text: "Artists", icon: <PersonPinCircleIcon sx={{ width: "20px", height: "20px" }} />, path: "/user/artists" },
+  { text: "Albums", icon: <GroupIcon sx={{ width: "20px", height: "20px" }} />, path: "/user/albums" },
+  { text: "Genres", icon: <MusicNoteIcon sx={{ width: "20px", height: "20px" }} />, path: "/user/genres" },
+  { text: "Tribes", icon: <AlbumIcon sx={{ width: "20px", height: "20px" }} />, path: "/user/tribes" },
+];
+
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isUser, setIsUser] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -59,12 +70,13 @@ const ResponsiveAppBar = () => {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorElNav(event.currentTarget);
   const handleCloseNavMenu = () => setAnchorElNav(null);
 
-
-
   const handleLogout = () => {
     clearTokens();
     router.push("/login");
   };
+
+  // Determine which set of navigation links to display based on user role
+  const pageObjects = isAdmin ? adminPageObjects : isUser ? userPageObjects : [];
 
   return (
     <AppBar className={styles.appBar}>
@@ -81,7 +93,7 @@ const ResponsiveAppBar = () => {
                 <MenuIcon />
               </IconButton>
               <Menu anchorEl={anchorElNav} open={Boolean(anchorElNav)} onClose={handleCloseNavMenu}>
-                {adminPageObjects.map(({ text, path }) => (
+                {pageObjects.map(({ text, path }) => (
                   <MenuItem key={text} onClick={handleCloseNavMenu}>
                     <Link href={path} className={pathname === path ? styles.navbarButtonActive : ""}>
                       <Typography>{text}</Typography>
@@ -96,7 +108,7 @@ const ResponsiveAppBar = () => {
           {/* Desktop Navigation */}
           {/* { isAuthenticated && (
              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {adminPageObjects.map(({ text, icon, path }) => {
+              {pageObjects.map(({ text, icon, path }) => {
                 const isActive = pathname === path;
                 return (
                   <Link href={path} key={text} className={isActive ? styles.navbarButtonActive : ""}>
@@ -112,15 +124,20 @@ const ResponsiveAppBar = () => {
                 );
               })}
             </Box>
- 
           )} */}
          
           {/* User Profile Menu or Login */}
           <Box sx={{ flexGrow: 0, ml: "auto", display: "flex", alignItems: "center" }}>
             {isAuthenticated ?  (
-              <Box sx={{display:"flex", gap:"5px"}}>
-                {isAdmin && <ColorToggleButton />}
-                {isUser && ''}
+              <Box sx={{display:"flex", gap:"2rem"}}>
+                {isAdmin && (
+                  <Box sx={{display:"flex", gap:"5px", alignItems: "center"}}>
+                    <AdminPanelSettingsIcon sx={{ width: "30px", height: "30px", color: "#F3B007" }} />
+                    <Typography sx={{color: "#F3B007", fontWeight: "bold"}}>
+                      Admin
+                    </Typography>
+                  </Box>
+                )}
                 <Button className="callToActionButton" onClick={handleLogout}>Logout</Button>
                 </Box>
             ) : (

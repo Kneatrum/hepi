@@ -55,13 +55,16 @@ export default function Sidebar() {
               className={isActive ? "callToActionButton" : ""}
               sx={{
                 bgcolor: isActive ? "yellow" : "transparent",
-                borderRadius: 1,
                 "&:hover": {
                   backgroundColor: isActive ? "yellow" : "#333",
                 },
               }}
             >
-              <ListItemIcon sx={{ color: isActive ? "black" : "white" }}>
+              <ListItemIcon sx={{
+                color: isActive ? "#F3B007" : "white",
+                minWidth: 'auto',     
+                marginRight: 3,   
+              }}>
                 {icon}
               </ListItemIcon>
               <ListItemText

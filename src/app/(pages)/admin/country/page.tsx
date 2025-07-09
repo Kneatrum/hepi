@@ -10,8 +10,13 @@ import {
   TableContainer, 
   TableHead, 
   TableRow, 
-  Paper, 
-  Button
+  Card, 
+  CardContent, 
+  Paper,
+  useMediaQuery,
+  useTheme, 
+  Button,
+  Chip,
 } from "@mui/material";
 
 import AdminDashboard from "@/app/components/layout/AdminDashboard";
@@ -102,6 +107,8 @@ export default function Page() {
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
   useEffect(() => {
     async function fetchCountries() {
@@ -132,6 +139,11 @@ export default function Page() {
     // Handle success (e.g., refresh list, show notification)
   };
 
+  const handleCountryClick = (country: Country) => {
+    setSelectedCountry(country)
+    setPopupOpen(true)
+  }
+
   const filteredCountries = countries.filter((country) =>
     country.name.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
@@ -140,7 +152,7 @@ export default function Page() {
   return (
     <ThemeProvider theme={darkYellowTheme}>
       <AdminDashboard>
-        <Box className={styles.home} sx={{padding:"0px"}}>
+        <Box className={styles.home} sx={{padding:"0.625rem"}}>
           {/* Top Section */}
           <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
             <Box className={styles.layer}>
@@ -153,7 +165,7 @@ export default function Page() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </Box>
-                  <Box sx={{ paddingRight: "20px" }}>
+                  <Box >
                     <Button 
                       className="callToActionButton"
                       onClick={() => setDialogOpen(true)}
@@ -171,20 +183,22 @@ export default function Page() {
               <Spinner />
             )}
 
-            {!loading && filteredCountries.length === 0 ? (
+            {!loading && filteredCountries.length === 0 && (
                 <Box className={styles.centerYX}>
                   <InfoCard
-                    title="No tribe found"
+                    title="No Countries found"
                     description="Try searching with a different keyword or check back later."
                   />
                 </Box>
-              ) : ( !loading && (
-                <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
+              )}
+              
+              { !loading && filteredCountries.length > 0 && !isMobile && (
+                <Box sx={{ height: "100%", overflow: "hidden" }}>
                   <TableContainer component={Paper} sx={{borderRadius: "0px"}}>
                     <Table sx={{ minWidth: 650 }} aria-label="countries table">
                       <TableHead >
                         <TableRow>
-                            <TableCell></TableCell>
+                            <TableCell>ID</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Country Code</TableCell>
                             <TableCell>Region</TableCell>
@@ -198,15 +212,12 @@ export default function Page() {
                               '&:last-child td, &:last-child th': { border: 0 },
                               cursor: 'pointer'
                             }}
-                            onClick={() => {
-                              setSelectedCountry(country);
-                              setPopupOpen(true);
-                            }}
+                            onClick={() => handleCountryClick(country)}
                           >
                             <TableCell component="th" scope="row">
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
-                                <Typography sx={{ fontWeight: 'bold', color: 'gray' }}>
+                                <Typography sx={{ fontWeight: 'bold', color: '#FFEB3B' }}>
                                   {country.countryId} 
                                 </Typography>
                               </Box>
@@ -217,9 +228,15 @@ export default function Page() {
                               </Typography>
                             </TableCell>
                             <TableCell>
-                              <Typography sx={{ color: '#fff' }}>
-                                {country.code}
-                              </Typography>
+                              <Chip
+                                label={country.code}
+                                size="small"
+                                sx={{
+                                  backgroundColor: "rgba(255, 235, 59, 0.2)",
+                                  color: "#FFEB3B",
+                                  fontWeight: "bold",
+                                }}
+                              />
                             </TableCell>
                             <TableCell>
                               <Typography sx={{ color: '#fff' }}>
@@ -232,7 +249,112 @@ export default function Page() {
                     </Table>
                   </TableContainer>
                 </Box>
-              ))}
+              )}
+
+              {/* Mobile Card View */}
+              {!loading && filteredCountries.length > 0 && isMobile && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    pb: 2,
+                  }}
+                >
+                  {filteredCountries.map((country) => (
+                    <Card
+                      key={country.countryId}
+                      sx={{
+                        cursor: "pointer",
+                        mb: 2,
+                        position: "relative",
+                        overflow: "hidden",
+                        transition: "all 0.2s ease-in-out",
+                        "&:active": {
+                          transform: "scale(0.98)",
+                        },
+                      }}
+                      onClick={() => handleCountryClick(country)}
+                    >
+                      <CardContent
+                        sx={{
+                          p: 3,
+                          "&:last-child": { pb: 2 },
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "100%",
+                            gap: 2,
+                          }}
+                        >
+                          <Chip
+                            label={country.countryId}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: "rgb(0, 0, 0)",
+                              color: "white",
+                            }}>
+                          </Chip>
+                          
+                          <Box sx={{flex: 1}}>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: "#fff",
+                                fontWeight: 600,
+                                fontSize: "1.1rem",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {country.name}
+                            </Typography>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                  color: "#888",
+                                  fontSize: "0.7rem",
+                                  mt: 1,
+                                  display: "block",
+                                }}
+                              >
+                                Tap for details
+                              </Typography>
+                            </Box>
+
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: "16px",
+                              right: "16px",
+                            }}
+                          >
+                            <Chip
+                              label={country.code}
+                              size="small"
+                              sx={{
+                                backgroundColor: "rgba(255, 235, 59, 0.2)",
+                                color: "#FFEB3B",
+                                fontWeight: "bold",
+                                fontSize: "0.75rem",
+                              }}
+                            />
+                          </Box>
+                        </Box>
+
+                        {/* Tap hint */}
+                        
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Box>
+              )}
           </Box>
         </Box>
         <CountryEditDialog 
