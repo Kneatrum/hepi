@@ -29,6 +29,7 @@ import InfoCard from "@/app/components/common/ui/InfoCard";
 import CreateArtistDialog from "@/app/components/common/dialogs/CreateArtistDialog";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ArtistDetailsModal from "@/app/components/common/ui/ArtistDetailsModal";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const darkYellowTheme = createTheme({
   palette: {
@@ -207,32 +208,90 @@ export default function Page() {
     <AdminDashboard>
       <Box className={styles.home} sx={{padding:"0.625rem"}}>
         {/* Top Section */}
-        <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
-          <Box className={styles.layer}>
-            <Box className={styles.layerTop}>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Box className={styles.layerTopSearch}>
-                  <CustomSearchField
-                    placeholder="Search an artist."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
+        <Box sx={{display:"flex", flexDirection:"column"}}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                position: "sticky",
+                top: 0,
+                zIndex: 10,
+                bgcolor: "background.default",
+              }}
+            >
+              {/* Top Bar: Title, Search, Button */}
+              {isMobile ? (
+                // Mobile Layout
+                <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, pb: 2 }}>
+                  <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                    Artists
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <CustomSearchField
+                        placeholder="Search an artist."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </Box>
+                    <AddCircleIcon
+                      sx={{ color: 'yellow', fontSize: '40px', cursor: 'pointer' }}
+                      onClick={() => setCreateArtistDialogOpen(true)}
+                    />
+                  </Box>
                 </Box>
-
-                <Box >
+              ) : (
+                // Desktop Layout
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                    Artists
+                  </Typography>
+                  <Box className={styles.layerTopSearch}>
+                    <CustomSearchField
+                      placeholder="Search an artist."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </Box>
                   <Button 
-                    className="callToActionButton"
+                    sx={{ 
+                      color: "black", 
+                      borderRadius: "50px", 
+                      backgroundColor: "#F3B007", 
+                      textTransform: 'none',
+                      "&:hover": { backgroundColor: "#FFEB3B" }
+                    }}
+                    variant="contained"
+                    size="medium"
                     onClick={() => setCreateArtistDialogOpen(true)}
                   >
-                  Create Artists
+                    Create Artist
                   </Button>
                 </Box>
-              </Box>
-             
-              
-            </Box>
+              )}
 
-          </Box>
+              {/* Sticky Table Header for Desktop */}
+              {!isMobile && !loading && filteredArtist.length > 0 && (
+                <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ width: "10%" }}>ID</TableCell>
+                      <TableCell sx={{ width: "30%" }}>Name</TableCell>
+                      <TableCell sx={{ width: "20%" }}>Country</TableCell>
+                      <TableCell sx={{ width: "20%" }}>Region</TableCell>
+                      <TableCell sx={{ width: "20%" }}>Culture</TableCell>
+                    </TableRow>
+                  </TableHead>
+                </Table>
+              )}
+            </Box>
 
           {/* Songs box */}
           { loading && <Spinner /> }
@@ -246,20 +305,11 @@ export default function Page() {
             </Box>
           )  : ( !loading && ( 
             !isMobile ? (
-              <Box sx={{ height: "100%", overflow: "hidden" }}>
+              <Box>
                 {/* Suggested Singers */}
                 <Box className={styles.gridContainer}>
-                  <TableContainer component={Paper} sx={{borderRadius: "0px"}}>
-                    <Table sx={{ minWidth: 650 }} aria-label="countries table">
-                      <TableHead >
-                        <TableRow>
-                          <TableCell>ID</TableCell>
-                          <TableCell>Name</TableCell>
-                          <TableCell>Country</TableCell>
-                          <TableCell>Region</TableCell>
-                          <TableCell>Culture</TableCell>
-                        </TableRow>
-                      </TableHead>
+                  <TableContainer component={Paper} sx={{ borderRadius: "0px", borderTop: "none" }}>
+                    <Table sx={{ minWidth: 650, tableLayout: "fixed" }} aria-label="artists table">
                       <TableBody>
                         {filteredArtist.map((artist, index) => (
                           <TableRow
@@ -273,7 +323,7 @@ export default function Page() {
                               // setPopupOpen(true);
                             }}
                           >
-                            <TableCell component="th" scope="row">
+                            <TableCell component="th" scope="row" sx={{ width: "10%" }}>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
                                 <Typography sx={{ fontWeight: 'bold', color: 'yellow'}}>
@@ -281,7 +331,7 @@ export default function Page() {
                                 </Typography>
                               </Box>
                             </TableCell>
-                            <TableCell component="th" scope="row">
+                            <TableCell component="th" scope="row" sx={{ width: "30%" }}>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
                                 <Typography sx={{ fontWeight: 'bold', color: 'gray' }}>
@@ -289,17 +339,17 @@ export default function Page() {
                                 </Typography>
                               </Box>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ width: "20%" }}>
                               <Typography sx={{ color: '#fff' }}>
                                 {artist.country.name}
                               </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ width: "20%" }}>
                               <Typography sx={{ color: '#fff' }}>
                                 {artist.country.region}
                               </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ width: "20%" }}>
                               <Typography sx={{ color: '#fff' }}>
                                 {artist.tribe.name}
                               </Typography>

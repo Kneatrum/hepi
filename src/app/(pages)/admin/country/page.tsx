@@ -30,6 +30,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import  CountryEditDialog from "@/app/components/common/ui/CountryEditDialog";
 import { Country } from "@/app/types";
 import CreateCountryDialog from "@/app/components/common/dialogs/CreateCountryDialog";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
 // Custom theme with dark and yellow colors
@@ -154,28 +155,88 @@ export default function Page() {
       <AdminDashboard>
         <Box className={styles.home} sx={{padding:"0.625rem"}}>
           {/* Top Section */}
-          <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
-            <Box className={styles.layer}>
-              <Box className={styles.layerTop}>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{display:"flex", flexDirection:"column"}}>
+            <Box 
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                position: "sticky",
+                top: 0,
+                zIndex: 10,
+                bgcolor: "background.default",
+              }}
+              >
+              {/* Top Bar: Title, Search, Button */}
+              {isMobile ? (
+                // Mobile Layout
+                  <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, pb: 2 }}>
+                    <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                      Countries
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Box sx={{ flexGrow: 1 }}>
+                        <CustomSearchField
+                          placeholder="Search countries by name"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                      </Box>
+                      <AddCircleIcon
+                        sx={{ color: 'yellow', fontSize: '40px', cursor: 'pointer' }}
+                        onClick={() => setDialogOpen(true)}
+                      />
+                    </Box>
+                  </Box>
+                ) : (
+                  // Desktop Layout
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      width: "100%",
+                    }}
+                  >
+                  <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                    Countries
+                  </Typography>
                   <Box className={styles.layerTopSearch}>
                     <CustomSearchField
-                      placeholder="Search countries by name."
+                      placeholder="Search an country"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </Box>
-                  <Box >
-                    <Button 
-                      className="callToActionButton"
-                      onClick={() => setDialogOpen(true)}
-                    >
-                      Add Country
-                    </Button>
+                  <Button 
+                    sx={{ 
+                      color: "black", 
+                      borderRadius: "50px", 
+                      backgroundColor: "#F3B007", 
+                      textTransform: 'none',
+                      "&:hover": { backgroundColor: "#FFEB3B" }
+                    }}
+                    variant="contained"
+                    size="medium"
+                    onClick={() => setDialogOpen(true)}
+                  >
+                    Create Artist
+                  </Button>
                   </Box>
-                </Box>
-              </Box>
+                )}
               
+                {/* Sticky Table Header for Desktop */}
+                {!isMobile && !loading && filteredCountries.length > 0 && (
+                  <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Country Code</TableCell>
+                        <TableCell>Region</TableCell>
+                      </TableRow>
+                    </TableHead>
+                  </Table>
+                )}
             </Box>
 
             {/* Users Table */}
@@ -196,14 +257,6 @@ export default function Page() {
                 <Box sx={{ height: "100%", overflow: "hidden" }}>
                   <TableContainer component={Paper} sx={{borderRadius: "0px"}}>
                     <Table sx={{ minWidth: 650 }} aria-label="countries table">
-                      <TableHead >
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Country Code</TableCell>
-                            <TableCell>Region</TableCell>
-                        </TableRow>
-                      </TableHead>
                       <TableBody>
                         {filteredCountries.map((country) => (
                           <TableRow

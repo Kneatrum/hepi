@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "../../../styles/page.module.css";
 import { 
   Box, 
-  // Button, 
+  Button, 
   // Link, 
   Typography, 
   Chip, 
@@ -28,6 +28,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getAllUsers, FormattedUser } from "@/app/utils/fetchUsersUtils";
 import { useSession } from "@/app/context/SessionContext";
 import  UserPopup from "@/app/components/common/ui/UserPopup";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
 // Custom theme with dark and yellow colors
@@ -179,17 +180,90 @@ export default function Page() {
       <AdminDashboard>
         <Box className={styles.home} sx={{padding:"0.625rem"}}>
           {/* Top Section */}
-          <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
-            <Box className={styles.layer}>
-              <Box className={styles.layerTop}>
-                <Box sx={{ width: "30%" }}>
-                  <CustomSearchField
-                  placeholder="Search users by name or email..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+          <Box sx={{display:"flex", flexDirection:"column"}}>
+            <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              position: "sticky",
+              top: 0,
+              zIndex: 10,
+              bgcolor: "background.default",
+            }}
+            >
+              {/* Top Bar: Title, Search, Button */}
+              {isMobile ? (
+                // Mobile Layout
+              <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, pb: 2 }}>
+                <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                  Users
+                </Typography>
+                <Box  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <CustomSearchField
+                      placeholder="Search users by name or email..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </Box>
+                <AddCircleIcon
+                  sx={{ color: 'yellow', fontSize: '40px', cursor: 'pointer' }}
+                  onClick={() => setPopupOpen(true)}
+                />
               </Box>
+            </Box>
+              ) : (
+                // Desktop Layout
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                    Artists
+                  </Typography>
+                  <Box className={styles.layerTopSearch}>
+                    <CustomSearchField
+                      placeholder="Search an artist."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </Box>
+                  <Button 
+                    sx={{ 
+                      color: "black", 
+                      borderRadius: "50px", 
+                      backgroundColor: "#F3B007", 
+                      textTransform: 'none',
+                      "&:hover": { backgroundColor: "#FFEB3B" }
+                    }}
+                    variant="contained"
+                    size="medium"
+                    onClick={() => setPopupOpen(true)}
+                  >
+                    Create Artist
+                  </Button>
+                </Box>
+              )}
+
+              {/* Sticky Table Header for Desktop */}
+              {!isMobile && !loading && filteredUsers.length > 0 && (
+                <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>ID</TableCell>
+                      <TableCell>Name</TableCell>
+                      {/* <TableCell>Email</TableCell> */}
+                      {/* <TableCell>Phone Number</TableCell> */}
+                      <TableCell>Role</TableCell>
+                      <TableCell>Status</TableCell>
+                      {/* <TableCell>Country</TableCell> */}
+                    </TableRow>
+                  </TableHead>
+                </Table>
+              )}
             </Box>
 
             {/* Users Table */}
@@ -211,17 +285,6 @@ export default function Page() {
                   <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px" }}>
                     <TableContainer component={Paper} sx={{ borderRadius: "0px"}}>
                       <Table sx={{ minWidth: 650 }} aria-label="users table">
-                        <TableHead >
-                          <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Name</TableCell>
-                            {/* <TableCell>Email</TableCell> */}
-                            {/* <TableCell>Phone Number</TableCell> */}
-                            <TableCell>Role</TableCell>
-                            <TableCell>Status</TableCell>
-                            {/* <TableCell>Country</TableCell> */}
-                          </TableRow>
-                        </TableHead>
                         <TableBody>
                           {filteredUsers.map((user) => (
                             <TableRow

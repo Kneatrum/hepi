@@ -1,70 +1,45 @@
-import styles from "../../../styles/page.module.css";
-import { Box, TextField, InputAdornment } from "@mui/material";
+"use client";
+import { TextField, InputAdornment, TextFieldProps } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-interface SearchFieldProps {
-  label?: string;
-  placeholder?: string;
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
+type CustomSearchFieldProps = Omit<TextFieldProps, "variant" | "size">;
 
-export default function CustomSearchField({ label, placeholder, value, onChange }: SearchFieldProps) {
+export default function CustomSearchField(props: CustomSearchFieldProps) {
   return (
-    <Box className={styles.customFieldBox}>
-      <TextField
-        placeholder={placeholder || "Search..."}
-        type="text"
-        label={label}
-        variant="outlined"
-        className={styles.customTextField}
-        value={value}
-        onChange={onChange}
-        InputLabelProps={{
-          sx: {
-            color: "var(--placeholder) !important",
-            fontFamily: "var(--font-outfit) !important",
-            "&.Mui-focused": {
-              color: "#FFFFFF !important",
-            },
+    <TextField
+      {...props}
+      variant="outlined"
+      size="small" // Use "small" size for a more compact height
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "50px", // Increase for more rounded corners (pill shape)
+          backgroundColor: "#1a1a1a",
+          transition: "background-color 0.2s, border-color 0.2s",
+          "& fieldset": {
+            borderColor: "#333",
           },
-        }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon sx={{ color: "#D39A0B" }} />
-            </InputAdornment>
-          ),
-          sx: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "12px !important",
-              "& fieldset": {
-                borderRadius: "12px !important",
-                borderColor: "#2E2E2E !important",
-              },
-              "&:hover fieldset": {
-                borderColor: "#00BFFF",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#FFFFFF",
-                borderWidth: "2px",
-              },
-            },
-            "& input": {
-              color: "#FFFFFF !important",
-              paddingLeft: "10px",
-              "&::placeholder": {
-                color: "blue",
-                opacity: 1, // ensures color applies in most browsers
-              },
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderRadius: "12px !important",
-              borderColor: "#2E2E2E !important",
-            },
+          "&:hover fieldset": {
+            borderColor: "#FFEB3B",
           },
-        }}
-      />
-    </Box>
+          "&.Mui-focused fieldset": {
+            borderColor: "#FFEB3B",
+            borderWidth: "1px",
+          },
+        },
+        "& .MuiOutlinedInput-input::placeholder": {
+          color: "#888",
+          opacity: 1,
+        },
+        ...props.sx,
+      }}
+      InputProps={{
+        ...props.InputProps,
+        startAdornment: (
+          <InputAdornment position="start">
+            <SearchIcon sx={{ color: "gray" }} />
+          </InputAdornment>
+        ),
+      }}
+    />
   );
 }

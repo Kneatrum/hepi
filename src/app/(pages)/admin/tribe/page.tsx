@@ -31,6 +31,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import  TribeEditDialog from "@/app/components/common/ui/TribeEditDialog";
 import { Tribe } from "@/app/types";
 import CreateTribeDialog from "@/app/components/common/dialogs/CreateTribeDialog";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
 // Custom theme with dark and yellow colors
@@ -158,28 +159,86 @@ const handleTribeClick = (tribe: Tribe) => {
       <AdminDashboard>
         <Box className={styles.home} sx={{padding:"0.625rem"}}>
           {/* Top Section */}
-          <Box sx={{display:"flex", flexDirection:"column",gap:"20px"}}>
-            <Box className={styles.layer}>
-              <Box className={styles.layerTop}>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Box className={styles.layerTopSearch}>
+          <Box sx={{display:"flex", flexDirection:"column"}}>
+            <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              position: "sticky",
+              top: 0,
+              zIndex: 10,
+              bgcolor: "background.default",
+            }}
+            >
+              {/* Top Bar: Title, Search, Button */}
+              {isMobile ? (
+                // Mobile Layout
+              <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, pb: 2 }}>
+                <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                  Tribes
+                </Typography>
+                <Box  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ flexGrow: 1 }}>
                     <CustomSearchField
                       placeholder="Search tribes by name."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </Box>
-                  <Box >
-                    <Button 
-                      className="callToActionButton"
-                      onClick={() => setDialogOpen(true)}
-                    >
-                      Add Tribe
-                    </Button>
-                  </Box>
+                  <AddCircleIcon
+                    sx={{ color: 'yellow', fontSize: '40px', cursor: 'pointer' }}
+                    onClick={() => setDialogOpen(true)}
+                  />
                 </Box>
               </Box>
-              
+              ) : (
+                // Desktop Layout
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                    Artists
+                  </Typography>
+                  <Box className={styles.layerTopSearch}>
+                    <CustomSearchField
+                      placeholder="Search an artist."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </Box>
+                  <Button 
+                    sx={{ 
+                      color: "black", 
+                      borderRadius: "50px", 
+                      backgroundColor: "#F3B007", 
+                      textTransform: 'none',
+                      "&:hover": { backgroundColor: "#FFEB3B" }
+                    }}
+                    variant="contained"
+                    size="medium"
+                    onClick={() => setDialogOpen(true)}
+                  >
+                    Create Tribe
+                  </Button>
+                </Box>
+              )}
+
+              {/* Sticky Table Header for Desktop */}
+              {!isMobile && !loading && filteredTribes.length > 0 && (
+                <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ width: "33.33%" }}>ID</TableCell>
+                      <TableCell sx={{ width: "33.33%" }}>Name</TableCell>
+                      <TableCell sx={{ width: "33.33%" }}>Description</TableCell>
+                    </TableRow>
+                  </TableHead>
+                </Table>
+              )}
             </Box>
 
             {/* Users Table */}
@@ -203,13 +262,6 @@ const handleTribeClick = (tribe: Tribe) => {
                   <Box sx={{ height: "100%", overflow: "hidden" }}>
                     <TableContainer component={Paper} sx={{ borderRadius: "0px" }}>
                       <Table sx={{ minWidth: 650, tableLayout: "fixed" }} aria-label="tribes table">
-                        <TableHead >
-                          <TableRow>
-                            <TableCell sx={{ width: "33.33%" }}>ID</TableCell>
-                            <TableCell sx={{ width: "33.33%" }}>Name</TableCell>
-                            <TableCell sx={{ width: "33.33%" }}>Description</TableCell>
-                          </TableRow>
-                        </TableHead>
                         <TableBody>
                           {filteredTribes.map((tribe) => (
                             <TableRow
