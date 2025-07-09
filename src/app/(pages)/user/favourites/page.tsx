@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import CustomSearchField from "../../../components/common/CustomFields/CustomSearchField";
 import Dashboard from "../../../components/layout/Dashboard";
 import styles from "../../../styles/page.module.css";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import MediaPlayer from "../../../components/common/MediaPlayer/MediaPlayer";
 import InfoCard from "../../../components/common/ui/InfoCard";
 import Spinner from "../../../components/common/spinners/loading";
@@ -11,6 +11,75 @@ import SongCard from "../../../components/common/MediaPlayer/SongCard";
 import { useSession } from "@/app/context/SessionContext";
 import { useSongsContext } from "@/app/context/SongsContext";
 import { getUserRole, getUserId } from "../../../utils/authUtils";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const darkYellowTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#000000',
+    },
+    secondary: {
+      main: '#FFEB3B',
+    },
+    background: {
+      default: '#000000',
+      paper: '#1a1a1a',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: '#FFEB3B',
+    },
+  },
+  components: {
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#1a1a1a',
+          border: '1px solid #333',
+          borderRadius: '12px',
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#000000',
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        head: {
+          backgroundColor: '#000000',
+          color: '#FFEB3B',
+          fontWeight: 'bold',
+          fontSize: '16px',
+          borderBottom: '2px solid #FFEB3B',
+        },
+        body: {
+          color: '#ffffff',
+          borderBottom: '1px solid #333',
+          fontSize: '14px',
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: 'rgba(255, 235, 59, 0.1)',
+          },
+          '&:nth-of-type(even)': {
+            backgroundColor: 'rgba(255, 255, 255, 0.02)',
+          },
+        },
+      },
+    },
+  },
+});
+
+
 
 export default function Page() {
   const { songsLoading, votes, setVotes, error, favoriteSongs } = useSongsContext();
@@ -54,59 +123,75 @@ export default function Page() {
   };
 
   return (
-    <Dashboard>
-      <Box className={styles.home} sx={{padding:"0.625rem"}}>
-        {/* Top Section */}
-        <Box sx={{display:"flex", flexDirection:"column", gap:"20px"}}>
-          <Box className={styles.layer}>
-            <Box className={styles.layerTop} sx={{ width: "30%"}}>
-              <CustomSearchField
-                placeholder="Search a song..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </Box>
-          </Box>
-
-          { !error && songsLoading && (
-            <Spinner />
-          )}
-
-          { !error && !songsLoading && filteredSongs.length === 0 ? (
-            <Box className={styles.centerYX}>
-              <InfoCard
-                title="No songs found"
-                description="Try searching with a different keyword or check back later."
-              />
-            </Box>
-          ) : ( !error && !songsLoading && (
-            <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px"}}>
-              <Box className={styles.gridContainer} sx={{ mt: 3 }}>
-                <SongCard
-                  currentSongIndex={currentSongIndex}
-                  songs={filteredSongs}
-                  votes={votes}
-                  setVotes={setVotes}
-                  commentsData={null}
-                  handleSongSelect={handleSongSelect}
-                  userRole={userRole ?? undefined}
-                  adminMode={false}
-                />
+    <ThemeProvider theme={darkYellowTheme}>
+      <Dashboard>
+        <Box className={styles.home} sx={{padding:"0.625rem"}}>
+          {/* Top Section */}
+          <Box sx={{display:"flex", flexDirection:"column"}}>
+            <Box
+              sx={{
+              display: "flex",
+              flexDirection: "column",
+              position: "sticky",
+              top: 0,
+              zIndex: 10,
+              bgcolor: "background.default",
+            }}
+            >
+              <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, pb: 2 }}>
+                <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                  Favourites
+                </Typography>
+                <Box sx={{ flexGrow: 1 }}>
+                  <CustomSearchField
+                    placeholder="Search a song..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </Box>
               </Box>
             </Box>
-            ))}
+
+            { !error && songsLoading && (
+              <Spinner />
+            )}
+
+            { !error && !songsLoading && filteredSongs.length === 0 ? (
+              <Box className={styles.centerYX}>
+                <InfoCard
+                  title="No songs found"
+                  description="Try searching with a different keyword or check back later."
+                />
+              </Box>
+            ) : ( !error && !songsLoading && (
+              <Box sx={{ height: "100%", overflow: "hidden", paddingRight: "0px"}}>
+                <Box className={styles.gridContainer} sx={{ mt: 3 }}>
+                  <SongCard
+                    currentSongIndex={currentSongIndex}
+                    songs={filteredSongs}
+                    votes={votes}
+                    setVotes={setVotes}
+                    commentsData={null}
+                    handleSongSelect={handleSongSelect}
+                    userRole={userRole ?? undefined}
+                    adminMode={false}
+                  />
+                </Box>
+              </Box>
+              ))}
+          </Box>
         </Box>
-      </Box>
-      {filteredSongs.length > 0 && userID && userRole && (
-       <MediaPlayer 
-          songs={filteredSongs}
-          favoriteSongs={favoriteSongs} 
-          currentSongIndex={currentSongIndex}
-          onSongChange={handleSongChange}
-          userID={userID}
-          userRole={userRole}
-        />
-      )}
-    </Dashboard>
+        {filteredSongs.length > 0 && userID && userRole && (
+        <MediaPlayer 
+            songs={filteredSongs}
+            favoriteSongs={favoriteSongs} 
+            currentSongIndex={currentSongIndex}
+            onSongChange={handleSongChange}
+            userID={userID}
+            userRole={userRole}
+          />
+        )}
+      </Dashboard>
+    </ThemeProvider>
   );
 }
