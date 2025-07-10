@@ -27,7 +27,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getAllUsers, FormattedUser } from "@/app/utils/fetchUsersUtils";
 import { useSession } from "@/app/context/SessionContext";
 import  UserPopup from "@/app/components/common/ui/UserPopup";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
 // Custom theme with dark and yellow colors
