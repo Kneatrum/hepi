@@ -272,7 +272,7 @@ export default function Page() {
                     size="medium"
                     onClick={() => setCreateArtistDialogOpen(true)}
                   >
-                    Create Artist
+                    Add Artist
                   </Button>
                 </Box>
               )}

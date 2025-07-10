@@ -12,6 +12,8 @@ import {
   IconButton,
   ThemeProvider,
   createTheme, 
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import CustomField from "../CustomFields/CustomField";
 import SubmitButton from "../CustomButtons/SubmitButton";
@@ -46,8 +48,9 @@ const darkYellowTheme = createTheme({
           border: '1px solid #333',
           borderRadius: '16px',
           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8)',
-          minWidth: '600px',
-          maxWidth: '800px',
+          width: '100%',
+          maxWidth: '400px',
+          margin: '16px'
         },
       },
     },
@@ -166,7 +169,9 @@ export default function CreateArtistDialog({
   onSuccess,
 }: CreateArtistDialogProps ) {
     const { accessToken } = useSession();
-    // const router = useRouter();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
 
     const [formData, setArtistFormData] = useState<ArtistFormData>({
       id: 0,
@@ -332,6 +337,7 @@ export default function CreateArtistDialog({
         <Dialog 
           open={open} 
           onClose={handleClose}
+          fullScreen={isMobile}
           maxWidth="md"
           //   fullWidth
           PaperProps={{
@@ -355,8 +361,14 @@ export default function CreateArtistDialog({
             </IconButton>
           </DialogTitle>
 
-          <DialogContent sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5, pt: 1, mt: 5 }}>
+          <DialogContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: { xs: 3, sm: 5 },
+              pt: 1,
+              mt: 2,
+            }}>
               <CustomField
                 label="Full Name"
                 placeholder="John Doe"
@@ -411,19 +423,31 @@ export default function CreateArtistDialog({
               )}
             </Box>
           </DialogContent>
-          <DialogActions sx={{ borderTop: '1px solid #333', p: 3,  display: 'flex', justifyContent: 'space-between' }}>
+          <DialogActions 
+            sx={{
+              borderTop: '1px solid #333',
+              p: { xs: 2, sm: 3 },
+              justifyContent: 'flex-end',
+              gap: 1,
+            }}
+          >
+            
             <Button 
               variant="outlined"
               onClick={handleClose} 
               disabled={isSubmitting}
+              sx={{ height: '44px', width: '120px', borderRadius: '8px' }}
             >
               Cancel
             </Button>
-            <SubmitButton 
-              label={isSubmitting ? "Submitting..." : "Submit Artist"}
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            />
+         
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '120px', height: '20px' }}>
+              <SubmitButton 
+                label={isSubmitting ? "Submitting..." : "Submit Artist"}
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              />
+            </Box>
           </DialogActions>
         </Dialog>
       </ThemeProvider>

@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import styles from "../../../styles/page.module.css";
 import { 
-  Box, 
-  Button, 
+  Box,  
   // Link, 
   Typography, 
   Chip, 
@@ -200,7 +199,7 @@ export default function Page() {
                 <Box  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Box sx={{ flexGrow: 1 }}>
                     <CustomSearchField
-                      placeholder="Search users by name or email..."
+                      placeholder="Search by name or email..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -222,29 +221,15 @@ export default function Page() {
                   }}
                 >
                 <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
-                    Artists
+                    Users
                   </Typography>
                   <Box className={styles.layerTopSearch}>
                     <CustomSearchField
-                      placeholder="Search an artist."
+                      placeholder="Search by name or email..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </Box>
-                  <Button 
-                    sx={{ 
-                      color: "black", 
-                      borderRadius: "50px", 
-                      backgroundColor: "#F3B007", 
-                      textTransform: 'none',
-                      "&:hover": { backgroundColor: "#FFEB3B" }
-                    }}
-                    variant="contained"
-                    size="medium"
-                    onClick={() => setPopupOpen(true)}
-                  >
-                    Create Artist
-                  </Button>
                 </Box>
               )}
 
@@ -253,12 +238,12 @@ export default function Page() {
                 <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Name</TableCell>
+                      <TableCell sx={{ width: "25%" }}>ID</TableCell>
+                      <TableCell sx={{ width: "25%" }}>Name</TableCell>
                       {/* <TableCell>Email</TableCell> */}
                       {/* <TableCell>Phone Number</TableCell> */}
-                      <TableCell>Role</TableCell>
-                      <TableCell>Status</TableCell>
+                      <TableCell sx={{ width: "25%" }}>Role</TableCell>
+                      <TableCell sx={{ width: "25%" }}>Status</TableCell>
                       {/* <TableCell>Country</TableCell> */}
                     </TableRow>
                   </TableHead>
@@ -298,14 +283,14 @@ export default function Page() {
                                 setPopupOpen(true);
                               }}
                             >
-                              <TableCell component="th" scope="row">
+                              <TableCell component="th" scope="row" sx={{ width: "25%" }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                   <Typography sx={{ fontWeight: 'bold', color: 'yellow' }}>
                                     {user.id}
                                   </Typography>
                                 </Box>
                               </TableCell>
-                              <TableCell component="th" scope="row">
+                              <TableCell component="th" scope="row" sx={{ width: "25%" }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                   <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>
                                     {user.firstname} {user.lastname}
@@ -322,10 +307,10 @@ export default function Page() {
                                   {user.userPhoneNumber}
                                 </Typography>
                               </TableCell> */}
-                              <TableCell>
+                              <TableCell sx={{ width: "25%" }}>
                                 {getRoleChip(user.roleName)}
                               </TableCell>
-                              <TableCell>
+                              <TableCell sx={{ width: "25%" }}>
                                 {getStatusChip(user.roleStatus)}
                               </TableCell>
                               {/* <TableCell>

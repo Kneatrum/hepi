@@ -219,7 +219,7 @@ export default function Page() {
                     size="medium"
                     onClick={() => setDialogOpen(true)}
                   >
-                    Create Artist
+                    Add country
                   </Button>
                   </Box>
                 )}
@@ -229,10 +229,10 @@ export default function Page() {
                   <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
                     <TableHead>
                       <TableRow>
-                        <TableCell>ID</TableCell>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Country Code</TableCell>
-                        <TableCell>Region</TableCell>
+                        <TableCell sx={{ width: "25%" }} >ID</TableCell>
+                        <TableCell sx={{ width: "25%" }} >Name</TableCell>
+                        <TableCell sx={{ width: "25%" }} >Country Code</TableCell>
+                        <TableCell sx={{ width: "25%" }} >Region</TableCell>
                       </TableRow>
                     </TableHead>
                   </Table>
@@ -267,7 +267,7 @@ export default function Page() {
                             }}
                             onClick={() => handleCountryClick(country)}
                           >
-                            <TableCell component="th" scope="row">
+                            <TableCell component="th" scope="row" sx={{ width: "25%" }}>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 {/* <AccountCircleIcon sx={{ color: "#FFEB3B", fontSize: '24px' }} /> */}
                                 <Typography sx={{ fontWeight: 'bold', color: '#FFEB3B' }}>
@@ -275,12 +275,12 @@ export default function Page() {
                                 </Typography>
                               </Box>
                             </TableCell>
-                            <TableCell>
+                            <TableCell component="th" scope="row" sx={{ width: "25%" }}>
                               <Typography sx={{ color: '#fff' }}>
                                 {country.name}
                               </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell component="th" scope="row" sx={{ width: "25%" }}>
                               <Chip
                                 label={country.code}
                                 size="small"
@@ -291,7 +291,7 @@ export default function Page() {
                                 }}
                               />
                             </TableCell>
-                            <TableCell>
+                            <TableCell component="th" scope="row" sx={{ width: "25%" }}>
                               <Typography sx={{ color: '#fff' }}>
                                 {country.region}
                               </Typography>

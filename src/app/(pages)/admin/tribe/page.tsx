@@ -201,11 +201,11 @@ const handleTribeClick = (tribe: Tribe) => {
                   }}
                 >
                   <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
-                    Artists
+                    Tribes
                   </Typography>
                   <Box className={styles.layerTopSearch}>
                     <CustomSearchField
-                      placeholder="Search an artist."
+                      placeholder="Search tribe"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -222,7 +222,7 @@ const handleTribeClick = (tribe: Tribe) => {
                     size="medium"
                     onClick={() => setDialogOpen(true)}
                   >
-                    Create Tribe
+                    Add Tribe
                   </Button>
                 </Box>
               )}
