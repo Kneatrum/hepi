@@ -193,10 +193,10 @@ export default function Page() {
               {isMobile ? (
                 // Mobile Layout
               <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, pb: 2 }}>
-                <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
-                  Users
-                </Typography>
                 <Box  sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Typography sx={{ fontSize: "36px", fontWeight: "bold", color: "gray" }}>
+                    Users
+                  </Typography>
                   <Box sx={{ flexGrow: 1 }}>
                     <CustomSearchField
                       placeholder="Search by name or email..."
@@ -204,10 +204,6 @@ export default function Page() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </Box>
-                <AddCircleIcon
-                  sx={{ color: 'yellow', fontSize: '40px', cursor: 'pointer' }}
-                  onClick={() => setPopupOpen(true)}
-                />
               </Box>
             </Box>
               ) : (
