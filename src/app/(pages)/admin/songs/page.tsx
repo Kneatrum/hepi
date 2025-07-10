@@ -15,6 +15,7 @@ import { useSongsContext } from "@/app/context/SongsContext";
 import { getUserRole, getUserId } from "@/app/utils/authUtils";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import CreateSongDialog from "@/app/components/common/dialogs/CreateSongDialog";
 
 
 
@@ -93,7 +94,8 @@ export default function Page() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const router = useRouter();
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+  const [createSongDialogOpen, setCreateSongDialogOpen] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
 
   useEffect(() => {
@@ -115,8 +117,8 @@ export default function Page() {
     router.push("/admin/songs/comments");
   };
 
-  const handleBackToArtistsClick = () => {
-    router.push("/admin/songs/create");
+  const handleAddSongButtonClick = () => {
+    setCreateSongDialogOpen(true);
   };
 
   const filteredSongs = songs.filter((songs) =>
@@ -133,6 +135,11 @@ export default function Page() {
   const handleSongChange = (index: number) => {
     setCurrentSongIndex(index);
   };
+
+  const handleSongDialogSuccess = () => {
+    console.log('New artist created');
+  };
+  
 
   return (
     <ThemeProvider theme={darkYellowTheme}>
@@ -157,14 +164,14 @@ export default function Page() {
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Box sx={{ flexGrow: 1 }}>
                           <CustomSearchField
-                            placeholder="Search an artist."
+                            placeholder="Search a song..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                           />
                         </Box>
                         <AddCircleIcon
                           sx={{ color: 'yellow', fontSize: '40px', cursor: 'pointer' }}
-                          onClick={() => handleBackToArtistsClick}
+                          onClick={() => setCreateSongDialogOpen(true)}
                         />
                       </Box>
                       <Box sx={{ display: 'flex', alignItems: 'left', gap: 2 }}>
@@ -221,7 +228,7 @@ export default function Page() {
                             }}
                             variant="contained"
                             size="medium"
-                            onClick={handleBackToArtistsClick}
+                            onClick={handleAddSongButtonClick}
                           >
                             Add a song
                           </Button>
@@ -260,8 +267,13 @@ export default function Page() {
             ))}
           </Box>
         </Box>
+        <CreateSongDialog
+          open={createSongDialogOpen}
+          onClose={() => setCreateSongDialogOpen(false)}
+          onSuccess={handleSongDialogSuccess}
+        />
         {filteredSongs.length > 0 && userID && userRole && (
-        <MediaPlayer 
+          <MediaPlayer 
             songs={filteredSongs} 
             favoriteSongs={favoriteSongs}
             currentSongIndex={currentSongIndex}
