@@ -14,8 +14,8 @@ import {
   Button,
   ThemeProvider,
   createTheme,
-  useTheme,
-  useMediaQuery,
+  // useTheme,
+  // useMediaQuery,
   Tabs,
   Tab,
 } from "@mui/material"
@@ -155,7 +155,7 @@ interface AuthDialogProps {
 export default function AuthDialog({ open, onClose, onSuccess }: AuthDialogProps) {
   const { setTokens, accessToken } = useSession()
   const router = useRouter()
-  const theme = useTheme()
+  // const theme = useTheme()
   // const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
   const [activeTab, setActiveTab] = useState(0)
