@@ -316,12 +316,12 @@ export default function AuthDialog({ open, onClose, onSuccess }: AuthDialogProps
       <Dialog
         open={open}
         onClose={handleClose}
-        fullScreen={isMobile}
+        fullScreen={false}
         maxWidth="md"
         PaperProps={{
           sx: {
             borderRadius: 1,
-            minHeight: "500px",
+            // minHeight: "400px",
             borderColor: "yellow",
           },
         }}
@@ -347,7 +347,8 @@ export default function AuthDialog({ open, onClose, onSuccess }: AuthDialogProps
               alignContent: "center",
               gap: { xs: 3, sm: 4 },
               pt: 1,
-              mt: 5,
+              mt: 3,
+              mb: 3,
             }}
           >
             {/* Login Tab */}
