@@ -272,14 +272,16 @@ export default function Page() {
           onClose={() => setCreateSongDialogOpen(false)}
           onSuccess={handleSongDialogSuccess}
         />
-        {filteredSongs.length > 0 && userID && userRole && (
+        {filteredSongs.length > 0 && userID &&  (
           <MediaPlayer 
-            songs={filteredSongs} 
+            songs={filteredSongs}
+            votes={votes}
+            setVotes={setVotes}
             favoriteSongs={favoriteSongs}
             currentSongIndex={currentSongIndex}
             onSongChange={handleSongChange}
             userID={userID}
-            userRole={userRole}
+            // userRole={userRole}
           />
         )}
       </AdminDashboard>

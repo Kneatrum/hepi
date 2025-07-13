@@ -72,7 +72,7 @@ const ResponsiveAppBar = () => {
 
   const handleLogout = () => {
     clearTokens();
-    router.push("/login");
+    router.push("/");
   };
 
   // Determine which set of navigation links to display based on user role

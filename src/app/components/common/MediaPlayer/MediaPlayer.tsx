@@ -24,27 +24,60 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
 import type { Comment } from "@/app/types"
 import CommentDialog from "@/app/components/common/CustomFields/CustomCommentDialog"
 import type { ParsedSong } from "@/app/utils/fetchSongsUtils"
+import { VotesState } from '@/app/utils/fetchVotesUtils';
+import AuthDialog from "../dialogs/AuthDialog";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const votesUrl = "https://music-backend-production-99a.up.railway.app/api/v1/votes"
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#000000',
+    },
+    secondary: {
+      main: '#FFEB3B',
+    },
+    background: {
+      default: '#000000',
+      paper: '#000000',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: '#FFEB3B',
+    },
+  },
+});
+
+
 
 interface MediaPlayerProps {
   songs: ParsedSong[]
+  votes: VotesState;
+  setVotes: React.Dispatch<React.SetStateAction<VotesState>>;
   favoriteSongs: ParsedSong[]
   currentSongIndex: number
   onSongChange: (index: number) => void
   userID: number | null
-  userRole: string | null
+  // userRole: string | null
+}
+
+interface NotificationState {
+  open: boolean;
+  message: string;
+  severity: 'success' | 'error' | 'warning' | 'info';
 }
 
 export default function MediaPlayer({
   songs,
+  votes,
+  setVotes,
   favoriteSongs,
   currentSongIndex,
   onSongChange,
   userID,
-  userRole,
+  // userRole,
 }: MediaPlayerProps) {
-  const { accessToken } = useSession()
+  const { isAuthenticated, accessToken } = useSession()
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -53,19 +86,20 @@ export default function MediaPlayer({
   const [isRepeating, setIsRepeating] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [likedSongIds, setLikedSongIds] = useState<Set<number>>(new Set())
-  const [upVotedSongs, setUpVotedSongs] = useState<Set<number>>(new Set())
-  const [downVotedSongs, setDownVotedSongs] = useState<Set<number>>(new Set())
   const [shuffleHistory, setShuffleHistory] = useState<number[]>([])
   const [commentDialogOpen, setCommentDialogOpen] = useState(false)
+  const [ showAuthDialog, setShowAuthDialog ] = useState(false);
 
   // Responsive states
   const [isExtrasExpanded, setIsExtrasExpanded] = useState(false)
   const [isMobileExtrasExpanded, setIsMobileExtrasExpanded] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [snackbarMessage, setSnackbarMessage] = useState("")
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "info" | "warning">("info")
+  const [notification, setNotification] = useState<NotificationState>({ 
+    open: false, 
+    message: '', 
+    severity: 'success' 
+  })
 
   // Initialize and sync local liked state with the prop from context
   useEffect(() => {
@@ -76,139 +110,66 @@ export default function MediaPlayer({
   // State to track if the target playback duration message has been logged for the current song
   const [hasLoggedTargetPlayback, setHasLoggedTargetPlayback] = useState(false)
 
-  const showSnackbar = useCallback((message: string, severity: typeof snackbarSeverity) => {
-    setSnackbarMessage(message)
-    setSnackbarSeverity(severity)
-    setSnackbarOpen(true)
-  }, [])
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false)
-  }
+  const showNotification = (message: string, severity: NotificationState['severity'] = 'success'): void => {
+    setNotification({ open: true, message, severity });
+  };
 
-  // Fetch user votes from backend
-  useEffect(() => {
-    if (!accessToken || !userID) return
+  const handleCloseNotification = (): void => {
+    setNotification({ ...notification, open: false });
+  };
 
-    const fetchUserVotes = async () => {
-      try {
-        const res = await fetch(votesUrl, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
-        if (!res.ok) {
-          const errorBody = await res.json()
-          throw new Error(errorBody?.message || "Failed to fetch votes.")
-        }
-        const result = await res.json()
-        const votes = result?.data?.content || []
-        const upVotes = new Set<number>()
-        const downVotes = new Set<number>()
-        for (const vote of votes) {
-          const songId = vote.song?.songId
-          if (!songId) continue
-          if (vote.voteType === "UPVOTE") {
-            upVotes.add(songId)
-          } else if (vote.voteType === "DOWNVOTE") {
-            downVotes.add(songId)
-          }
-        }
-        setUpVotedSongs(upVotes)
-        setDownVotedSongs(downVotes)
-        showSnackbar("Vote data loaded.", "success")
-      } catch (err) {
-        console.error("Error loading votes:", err)
-        const message = err instanceof Error ? err.message : "An unknown error occurred"
-        showSnackbar(`Failed to load votes: ${message}`, "error")
-      }
-    }
-    fetchUserVotes()
-  }, [accessToken, userID, userRole, showSnackbar])
-
-  const handleToggleUpVote = async () => {
-    if (!currentSong || !userID || !accessToken) return
-    const songId = currentSong.songId
-    const isUpVoted = upVotedSongs.has(songId)
-    const newUpVotes = new Set(upVotedSongs)
-    const newDownVotes = new Set(downVotedSongs)
-
+  const handleVote = async (songId: number, voteType: 'UPVOTE' | 'DOWNVOTE'): Promise<void> => {
     try {
-      if (isUpVoted) {
-        newUpVotes.delete(songId)
-        showSnackbar("Removed upvote.", "info")
-      } else {
-        const res = await fetch(votesUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            voteType: "UPVOTE",
-            songId,
-            userID,
-          }),
-        })
-        if (!res.ok) {
-          const errorBody = await res.json()
-          throw new Error(errorBody?.message || "Failed to upvote.")
-        }
-        showSnackbar("Song upvoted!", "success")
-        newUpVotes.add(songId)
-        newDownVotes.delete(songId)
+      
+      if (!userID || !isAuthenticated){
+        setShowAuthDialog(true);
+        return;
       }
-      setUpVotedSongs(newUpVotes)
-      setDownVotedSongs(newDownVotes)
-    } catch (error) {
-      console.error("Upvote error:", error)
-      const message = error instanceof Error ? error.message : "An unknown error occurred"
-      showSnackbar(`Error: ${message}`, "error")
-    }
-  }
-
-  const handleToggleDownVote = async () => {
-    if (!currentSong || !userID || !accessToken) return
-    const songId = currentSong.songId
-    const isDownVoted = downVotedSongs.has(songId)
-    const newDownVotes = new Set(downVotedSongs)
-    const newUpVotes = new Set(upVotedSongs)
-
-    try {
-      if (isDownVoted) {
-        newDownVotes.delete(songId)
-        showSnackbar("Removed downvote.", "info")
-      } else {
-        const res = await fetch(votesUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            voteType: "DOWNVOTE",
-            songId,
-            userID,
-          }),
-        })
-        if (!res.ok) {
-          const errorBody = await res.json()
-          throw new Error(errorBody?.message || "Failed to downvote.")
-        }
-        showSnackbar("Song Downvoted!", "success")
-        newDownVotes.add(songId)
-        newUpVotes.delete(songId)
+      const currentVote = votes[songId];
+      
+      // If clicking the same vote type, remove the vote
+      if (currentVote === voteType) {
+        // Here you would make an API call to remove the vote
+        setVotes(prev => ({
+          ...prev,
+          [songId]: null
+        }));
+        showNotification('Vote removed', 'info');
+        return;
       }
-      setDownVotedSongs(newDownVotes)
-      setUpVotedSongs(newUpVotes)
+
+      // Cast new vote
+      const response = await fetch('https://music-backend-production-99a.up.railway.app/api/v1/votes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          songId: songId,
+          userId: userID,
+          voteType: voteType
+        }),
+      });
+
+      if (response.ok) {
+        setVotes(prev => ({
+          ...prev,
+          [songId]: voteType
+        }));
+        showNotification(`${voteType.toLowerCase()} cast successfully!`, 'success');
+      } else {
+        showNotification('Error casting vote', 'error');
+      }
     } catch (error) {
-      console.error("Failed to downvote:", error)
+      console.error('Error voting:', error);
+      showNotification('Error casting vote', 'error');
     }
-  }
+  };
 
   const interactWithSong = async (songId: number, type: string) => {
     try {
+ 
       const response = await fetch(
         `https://music-backend-production-99a.up.railway.app/api/v1/songs/${songId}/interact?type=${encodeURIComponent(type)}`,
         {
@@ -462,19 +423,19 @@ export default function MediaPlayer({
   }
 
   const toggleLike = () => {
-    if (!currentSong || !userID || !accessToken) {
-      showSnackbar("Cannot update favorites. User not logged in.", "error")
-      return
-    }
+    if ( !userID || !isAuthenticated || !accessToken){
+      setShowAuthDialog(true);
+      return;
+    } 
     const songId = currentSong.songId
     const isCurrentlyLiked = likedSongIds.has(songId)
     const newLikedSongIds = new Set(likedSongIds)
     if (isCurrentlyLiked) {
       newLikedSongIds.delete(songId)
-      showSnackbar("Removed from favorites", "info")
+      // showSnackbar("Removed from favorites", "info")
     } else {
       newLikedSongIds.add(songId)
-      showSnackbar("Added to favorites!", "success")
+      // showSnackbar("Added to favorites!", "success")
     }
     setLikedSongIds(newLikedSongIds)
     toggleFavorite(userID, songId, isCurrentlyLiked, accessToken)
@@ -490,6 +451,10 @@ export default function MediaPlayer({
   }
 
   const handleOpenCommentDialog = () => {
+    if (!currentSong || !userID || !isAuthenticated){
+      setShowAuthDialog(true);
+      return;
+    } 
     setCommentDialogOpen(true)
   }
 
@@ -564,6 +529,7 @@ export default function MediaPlayer({
   }
 
   return (
+    <ThemeProvider theme={theme}>
     <Box
       sx={{
         position: "fixed",
@@ -743,17 +709,17 @@ export default function MediaPlayer({
                 }}
               />
               <IconButton onClick={toggleLike} size="small">
-                {currentSong && likedSongIds.has(currentSong.songId) ? (
-                  <FavoriteIcon sx={{ color: "red" }} />
+                {currentSong && votes && votes[currentSong.songId] === 'UPVOTE' ? (
+                  <FavoriteIcon sx={{ color: "yellow" }} />
                 ) : (
-                  <FavoriteBorderIcon sx={{ color: "white" }} />
+                  <FavoriteBorderIcon sx={{ color: "gray" }} />
                 )}
               </IconButton>
               <IconButton onClick={toggleShuffle} size="small">
-                <ShuffleIcon sx={{ color: isShuffling ? "#1db954" : "white" }} />
+                <ShuffleIcon sx={{ color: isShuffling ? "yellow" : "gray" }} />
               </IconButton>
               <IconButton onClick={toggleRepeat} size="small">
-                <ReplayIcon sx={{ color: isRepeating ? "#1db954" : "white" }} />
+                <ReplayIcon sx={{ color: isRepeating ? "yellow" : "gray" }} />
               </IconButton>
               <IconButton onClick={handleOpenCommentDialog} size="small">
                 <InsertCommentIcon sx={{ color: "gray" }} />
@@ -761,16 +727,24 @@ export default function MediaPlayer({
               <IconButton size="small">
                 <ShareIcon sx={{ color: "gray" }} />
               </IconButton>
-              <IconButton onClick={handleToggleUpVote} size="small">
-                {currentSong && upVotedSongs.has(currentSong.songId) ? (
-                  <ThumbUpIcon sx={{ color: "#1db954" }} />
+              <IconButton onClick={(e) => {
+                  e.stopPropagation()
+                  handleVote(currentSong.songId, 'UPVOTE')
+                }} 
+                size="small">
+                {currentSong && votes && votes[currentSong.songId] === 'UPVOTE' ? (
+                  <ThumbUpIcon sx={{ color: "yellow" }} />
                 ) : (
                   <ThumbUpOffAltIcon sx={{ color: "gray" }} />
                 )}
               </IconButton>
-              <IconButton onClick={handleToggleDownVote} size="small">
-                {currentSong && downVotedSongs.has(currentSong.songId) ? (
-                  <ThumbDownAltIcon sx={{ color: "#e53935" }} />
+              <IconButton onClick={(e) => {
+                  e.stopPropagation()
+                  handleVote(currentSong.songId, 'DOWNVOTE')
+                }}
+                size='small'>
+                {currentSong && votes && votes[currentSong.songId] === 'DOWNVOTE' ? (
+                  <ThumbDownAltIcon sx={{ color: "yellow" }} />
                 ) : (
                   <ThumbDownOffAltIcon sx={{ color: "gray" }} />
                 )}
@@ -868,16 +842,16 @@ export default function MediaPlayer({
               />
               <IconButton onClick={toggleLike} size="small">
                 {currentSong && likedSongIds.has(currentSong.songId) ? (
-                  <FavoriteIcon sx={{ color: "red" }} />
+                  <FavoriteIcon sx={{ color: "yellow" }} />
                 ) : (
-                  <FavoriteBorderIcon sx={{ color: "white" }} />
+                  <FavoriteBorderIcon sx={{ color: "gray" }} />
                 )}
               </IconButton>
               <IconButton onClick={toggleShuffle} size="small">
-                <ShuffleIcon sx={{ color: isShuffling ? "#1db954" : "white" }} />
+                <ShuffleIcon sx={{ color: isShuffling ? "yellow" : "gray" }} />
               </IconButton>
               <IconButton onClick={toggleRepeat} size="small">
-                <ReplayIcon sx={{ color: isRepeating ? "#1db954" : "white" }} />
+                <ReplayIcon sx={{ color: isRepeating ? "yellow" : "gray" }} />
               </IconButton>
               <IconButton onClick={handleOpenCommentDialog} size="small">
                 <InsertCommentIcon sx={{ color: "gray" }} />
@@ -885,18 +859,26 @@ export default function MediaPlayer({
               <IconButton size="small">
                 <ShareIcon sx={{ color: "gray" }} />
               </IconButton>
-              <IconButton onClick={handleToggleUpVote} size="small">
-                {currentSong && upVotedSongs.has(currentSong.songId) ? (
-                  <ThumbUpIcon sx={{ color: "#1db954" }} />
+              <IconButton onClick={(e) => {
+                  e.stopPropagation()
+                  handleVote(currentSong.songId, 'UPVOTE')
+                }} 
+                size="small">
+                {currentSong && votes && votes[currentSong.songId] === 'UPVOTE' ? (
+                  <ThumbUpIcon sx={{ color: "yellow" }} />
                 ) : (
                   <ThumbUpOffAltIcon sx={{ color: "gray" }} />
                 )}
               </IconButton>
-              <IconButton onClick={handleToggleDownVote} size="small">
-                {currentSong && downVotedSongs.has(currentSong.songId) ? (
-                  <ThumbDownAltIcon sx={{ color: "#e53935" }} />
+              <IconButton onClick={(e) => {
+                  e.stopPropagation()
+                  handleVote(currentSong.songId, 'DOWNVOTE')
+                }}
+                size='small'>
+                {currentSong && votes && votes[currentSong.songId] === 'DOWNVOTE' ? (
+                  <ThumbUpIcon sx={{ color: "yellow" }} />
                 ) : (
-                  <ThumbDownOffAltIcon sx={{ color: "gray" }} />
+                  <ThumbUpOffAltIcon sx={{ color: "gray" }} />
                 )}
               </IconButton>
             </Box>
@@ -957,16 +939,16 @@ export default function MediaPlayer({
               >
                 <IconButton onClick={toggleLike} size="small">
                   {currentSong && likedSongIds.has(currentSong.songId) ? (
-                    <FavoriteIcon sx={{ color: "red" }} />
+                    <FavoriteIcon sx={{ color: "yellow" }} />
                   ) : (
-                    <FavoriteBorderIcon sx={{ color: "white" }} />
+                    <FavoriteBorderIcon sx={{ color: "gray" }} />
                   )}
                 </IconButton>
                 <IconButton onClick={toggleShuffle} size="small">
-                  <ShuffleIcon sx={{ color: isShuffling ? "#1db954" : "white" }} />
+                  <ShuffleIcon sx={{ color: isShuffling ? "yellow" : "gray" }} />
                 </IconButton>
                 <IconButton onClick={toggleRepeat} size="small">
-                  <ReplayIcon sx={{ color: isRepeating ? "#1db954" : "white" }} />
+                  <ReplayIcon sx={{ color: isRepeating ? "yellow" : "gray" }} />
                 </IconButton>
                 <IconButton onClick={handleOpenCommentDialog} size="small">
                   <InsertCommentIcon sx={{ color: "gray" }} />
@@ -974,45 +956,59 @@ export default function MediaPlayer({
                 <IconButton size="small">
                   <ShareIcon sx={{ color: "gray" }} />
                 </IconButton>
-                <IconButton onClick={handleToggleUpVote} size="small">
-                  {currentSong && upVotedSongs.has(currentSong.songId) ? (
-                    <ThumbUpIcon sx={{ color: "#1db954" }} />
-                  ) : (
-                    <ThumbUpOffAltIcon sx={{ color: "gray" }} />
-                  )}
-                </IconButton>
-                <IconButton onClick={handleToggleDownVote} size="small">
-                  {currentSong && downVotedSongs.has(currentSong.songId) ? (
-                    <ThumbDownAltIcon sx={{ color: "#e53935" }} />
-                  ) : (
-                    <ThumbDownOffAltIcon sx={{ color: "gray" }} />
-                  )}
-                </IconButton>
+                <IconButton onClick={(e) => {
+                  e.stopPropagation()
+                  handleVote(currentSong.songId, 'UPVOTE')
+                }} 
+                size="small">
+                {currentSong && votes && votes[currentSong.songId] === 'UPVOTE' ? (
+                  <ThumbUpIcon sx={{ color: "yellow" }} />
+                ) : (
+                  <ThumbUpOffAltIcon sx={{ color: "gray" }} />
+                )}
+              </IconButton>
+              <IconButton onClick={(e) => {
+                  e.stopPropagation()
+                  handleVote(currentSong.songId, 'DOWNVOTE')
+                }}
+                size='small'>
+                {currentSong && votes && votes[currentSong.songId] === 'DOWNVOTE' ? (
+                  <ThumbDownAltIcon sx={{ color: "yellow" }} />
+                ) : (
+                  <ThumbDownOffAltIcon sx={{ color: "gray" }} />
+                )}
+              </IconButton>
               </Box>
             </Box>
           </Collapse>
         </Box>
       )}
 
+      <AuthDialog 
+        open={showAuthDialog} 
+        onClose={() => setShowAuthDialog(false)}
+      />
+
       <CommentDialog open={commentDialogOpen} onClose={handleCloseCommentDialog} onSubmit={handleSubmitComment} />
 
       <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        sx={{
-          mb: {
-            xs: isMobileExtrasExpanded ? 25 : 10, // Adjust margin based on expanded state
-            sm: isExtrasExpanded ? 18 : 10,
-            md: 10,
-          },
-        }} // Add margin to avoid overlap with media player
+        open={notification.open}
+        autoHideDuration={4000}
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
-          {snackbarMessage}
+        <Alert 
+          onClose={handleCloseNotification} 
+          severity={notification.severity}
+          sx={{ 
+            backgroundColor: notification.severity === 'success' ? theme.palette.secondary.main : undefined,
+            color: notification.severity === 'success' ? theme.palette.primary.main : undefined
+          }}
+        >
+          {notification.message}
         </Alert>
       </Snackbar>
     </Box>
+    </ThemeProvider>
   )
 }

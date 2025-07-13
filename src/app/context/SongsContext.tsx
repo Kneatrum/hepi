@@ -6,7 +6,7 @@ import { fetchAllSongsParallel } from "@/app/utils/fetchSongsUtils";
 import { fetchAllVotesPaginated } from "@/app/utils/fetchVotesUtils";
 import { PaginationOptions } from "@/app/utils/fetchVotesUtils"; // For votes
 import { useCommentPagination, IndexedComments, PaginationConfig } from "../utils/fetchCommentsUtils";
-import { fetchAllSongsWithPagination } from '@/app/utils/fetchFavoriteSongsByUser';
+import { fetchFavoriteSongsWithPagination } from '@/app/utils/fetchFavoriteSongsByUser';
 
 import { getUserId } from "@/app/utils/authUtils";
 
@@ -44,7 +44,7 @@ const favoritesApiUrl = 'https://music-backend-production-99a.up.railway.app/api
 const SongsContext = createContext<SongsContextType | undefined>(undefined);
 
 export const SongsProvider = ({ children }: { children: ReactNode }) => {
-  const { accessToken } = useSession();
+  const { isAuthenticated , accessToken } = useSession();
   const [ songs, setSongs ] = useState<ParsedSong[]>([]);
   const [ votes, setVotes ] = useState<VotesState>({});
   const [ songsLoading, setSongsLoading ] = useState<boolean>(true);
@@ -55,120 +55,36 @@ export const SongsProvider = ({ children }: { children: ReactNode }) => {
 
   const router = useRouter();
 
+  // First set the comments service configuration ( Requires Authentication )
   useEffect(() => {
-  if (accessToken) {
-    setCommentServiceConfig({
-      baseUrl: commentsApiUrl,
-      pageSize: 20,
-      maxConcurrentRequests: 5,
-      requestHeaders: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-  }
-}, [accessToken]);
-    
-  useEffect(() => {
-    async function fetchSongs() {
-      try {
-       
-        if (!accessToken) {
-          router.push('/login');
-          return;
+    if (isAuthenticated) {
+      setCommentServiceConfig({
+        baseUrl: commentsApiUrl,
+        pageSize: 20,
+        maxConcurrentRequests: 5,
+        requestHeaders: {
+          Authorization: `Bearer ${accessToken}`
         }
-
-        const result = await fetchAllSongsParallel({
-          baseUrl: songsApiUrl,
-          pageSize: 20,
-          maxConcurrentRequests: 5,
-          requestHeaders: {
-            'Authorization': 'Bearer ' + accessToken
-          },
-          queryParams: {
-            'sort': 'title'
-          }
-        });
-
-        if (result.error) {
-          console.error("Error fetching songs:", result.error);
-        } else {
-          console.log(`Loaded ${result.data.length} songs`);
-          setSongs(result.data);
-          setSongsLoading(false);
-        }
-
-      } catch (error) {
-        console.error("Failed to fetch songs:", error);
-        setError("Something went wrong while fetching songs: " + error);
-        setSongsLoading(false);
-      } finally {
-        setSongsLoading(false);
-      }
-    }
-  
-    fetchSongs();
-  }, [accessToken, router]);
-
-
-useEffect(() => {
-  const abortController = new AbortController();
-
-  if (!accessToken) {
-    router.push('/login');
-    return;
-  }
-
-  const userID = getUserId(accessToken);
-
-  const config = {
-    baseUrl: `${favoritesApiUrl}/${userID}`,
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    },
-    queryParams: {
-      sort: 'createdAt,desc' 
-    },
-    maxConcurrentRequests: 3,
-    pageSize: 20
-  };
-
-  
-  async function fetchData() {
-    // setLoading(true);
-    try {
- 
-      const songs = await fetchAllSongsWithPagination(config, (current, total) => {
-        // setProgress({ current, total });
-        console.log(`Loaded page ${current} of ${total}`);
       });
-      
-      if (!abortController.signal.aborted) {
-        setFavoriteSongs(songs);
-      }
-    } catch (error) {
-      if (!abortController.signal.aborted) {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-        setError(`Failed to fetch favorites: ${errorMessage}`);
-      }
-    } finally {
-      if (!abortController.signal.aborted) {
-        // setLoading(false);
-      }
     }
-  }
-  
-  fetchData();
-  
-  return () => abortController.abort();
-}, [accessToken, router, favoritesApiUrl]);
+  }, [isAuthenticated]);
 
 
+ 
+  // Then use the comments service configuration to fetch all comments  ( Requires Authentication )
+  useEffect(() => {
+    if (commentServiceConfig) {
+      fetchAllComments();
+    }
+  }, [commentServiceConfig, fetchAllComments]);
+
+
+  
+  // Fetch all votes ( Requires Authentication )
   useEffect(() => {
     const fetchVotes = async () => {
       
-
       if (!accessToken) {
-        router.push('/login');
         return;
       }
 
@@ -199,13 +115,96 @@ useEffect(() => {
   
     fetchVotes();
   }, [ accessToken, router]);
+    
+
+
+// Fetch all favorite songs by user ( Requires Authentication )
+useEffect(() => {
+  const abortController = new AbortController();
+
+  if (!accessToken) {
+    return;
+  }
+
+  const userID = getUserId(accessToken);
+
+  const config = {
+    baseUrl: `${favoritesApiUrl}/${userID}`,
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    },
+    queryParams: {
+      sort: 'createdAt,desc' 
+    },
+    maxConcurrentRequests: 3,
+    pageSize: 20
+  };
+
+  
+  async function fetchData() {
+    // setLoading(true);
+    try {
+ 
+      const songs = await fetchFavoriteSongsWithPagination(config, (current, total) => {
+        // setProgress({ current, total });
+        console.log(`Loaded page ${current} of ${total}`);
+      });
+      
+      if (!abortController.signal.aborted) {
+        console.log()
+        setFavoriteSongs(songs);
+      }
+    } catch (error) {
+      if (!abortController.signal.aborted) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        setError(`Failed to fetch favorites: ${errorMessage}`);
+      }
+    } finally {
+      if (!abortController.signal.aborted) {
+        // setLoading(false);
+      }
+    }
+  }
+  
+  fetchData();
+  
+  return () => abortController.abort();
+}, [isAuthenticated, router]);
+
 
 
   useEffect(() => {
-    if (commentServiceConfig) {
-      fetchAllComments();
+    async function fetchSongs() {
+      try {
+        const result = await fetchAllSongsParallel({
+          baseUrl: songsApiUrl,
+          pageSize: 20,
+          maxConcurrentRequests: 5,
+          queryParams: {
+            'sort': 'title'
+          }
+        });
+
+        if (result.error) {
+          console.error("Error fetching songs:", result.error);
+        } else {
+          console.log(`Loaded ${result.data.length} songs`);
+          setSongs(result.data);
+          setSongsLoading(false);
+        }
+
+      } catch (error) {
+        console.error("Failed to fetch songs:", error);
+        setError("Something went wrong while fetching songs: " + error);
+        setSongsLoading(false);
+      } finally {
+        setSongsLoading(false);
+      }
     }
-  }, [commentServiceConfig, fetchAllComments]);
+  
+    fetchSongs();
+  }, []);
+
 
   // if (commentsLoading) return <div>Loading... {progress.current}/{progress.total}</div>;
   // if (commentsError) return <div>Error: {commentsError.message}</div>;

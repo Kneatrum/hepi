@@ -239,7 +239,7 @@ function parseApiSong(apiSong: ApiSong): ParsedSong {
 /**
  * Fetches all pages in parallel batches and returns parsed songs
  */
-export async function fetchAllSongsWithPagination(
+export async function fetchFavoriteSongsWithPagination(
   config: PaginationConfig,
   onProgress?: (current: number, total: number) => void
 ): Promise<ParsedSong[]> {
@@ -313,7 +313,7 @@ export async function fetchAllSongsWithPagination(
 export function createPaginationFetcher(config: PaginationConfig) {
   return {
     fetchAllSongs: (onProgress?: (current: number, total: number) => void) =>
-      fetchAllSongsWithPagination(config, onProgress),
+      fetchFavoriteSongsWithPagination(config, onProgress),
     
     // Utility to create an AbortController for cancellation
     createAbortController: () => new AbortController(),

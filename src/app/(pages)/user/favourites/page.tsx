@@ -184,11 +184,13 @@ export default function Page() {
         {filteredSongs.length > 0 && userID && userRole && (
         <MediaPlayer 
             songs={filteredSongs}
+            votes={votes}
+            setVotes={setVotes}
             favoriteSongs={favoriteSongs} 
             currentSongIndex={currentSongIndex}
             onSongChange={handleSongChange}
             userID={userID}
-            userRole={userRole}
+            // userRole={userRole}
           />
         )}
       </Dashboard>

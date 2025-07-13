@@ -36,6 +36,7 @@ import { useSession } from "@/app/context/SessionContext";
 import { VotesState } from '@/app/utils/fetchVotesUtils';
 import { getUserId } from "@/app/utils/authUtils";
 import SongCommentsModal  from '@/app/components/common/modals/SongCommentsModal';
+import AuthDialog from '../dialogs/AuthDialog';
 
 
 import { IndexedComments } from '@/app/utils/fetchCommentsUtils';
@@ -94,7 +95,7 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
     message: '', 
     severity: 'success' 
   });
-  const { accessToken } = useSession();
+  const { isAuthenticated, accessToken } = useSession();
   // const router = useRouter();
   const [userID, setUserID] = useState<number | null>(null);
   const [commentsModalOpen, setCommentsModalOpen] = useState(false);
@@ -110,6 +111,7 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
   }, [commentsData]);
 
   const [editSongDialogOpen, setEditSongDialogOpen] = useState(false);
+  const [ showAuthDialog, setShowAuthDialog ] = useState(false);
 
   useEffect(() => {
 
@@ -124,6 +126,11 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
 
   const handleVote = async (songId: number, voteType: 'UPVOTE' | 'DOWNVOTE'): Promise<void> => {
     try {
+      
+      if (!userID || !isAuthenticated){
+        setShowAuthDialog(true);
+        return;
+      }
       const currentVote = votes[songId];
       
       // If clicking the same vote type, remove the vote
@@ -219,6 +226,10 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
   };
 
   const openCommentDialog = (songId: number): void => {
+    if (!isAuthenticated){
+      setShowAuthDialog(true)
+      return;
+    }
     setSelectedSongId(songId);
     setCommentDialogOpen(true);
   };
@@ -486,6 +497,11 @@ const SongCard: React.FC<SongCardProps> = ({ songs, currentSongIndex, votes, set
             }}
           />
         )}
+
+        <AuthDialog 
+          open={showAuthDialog} 
+          onClose={() => setShowAuthDialog(false)}
+        />
 
         <SongCommentsModal
           open={commentsModalOpen}

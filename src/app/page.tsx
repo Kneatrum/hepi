@@ -84,7 +84,7 @@ export default function Page() {
   const { songs, songsLoading, votes, setVotes, error, favoriteSongs } = useSongsContext();
   const [ searchQuery, setSearchQuery ] = useState("");
   const [ currentSongIndex, setCurrentSongIndex] = useState(0);
-  const { accessToken } = useSession();
+  const { isAuthenticated, accessToken } = useSession();
   const [ userID, setUserID ] = useState<number | null>(null);
   const [ userRole, setUserRole ] = useState<string | null>(null);
 
@@ -93,18 +93,14 @@ export default function Page() {
 
 
   useEffect(() => {
-    if (!accessToken) {
-      console.error("No access token available");
-      return;
+    if (isAuthenticated && accessToken) {
+      const userID = getUserId(accessToken);
+      const userRole = getUserRole(accessToken);
+      setUserID(userID);
+      setUserRole(userRole);
     }
 
-    const userID = getUserId(accessToken);
-    const userRole = getUserRole(accessToken);
-
-    setUserID(userID);
-    setUserRole(userRole);
-
-  }, [accessToken]);
+  }, [isAuthenticated, accessToken]);
   
 
   const filteredSongs = songs.filter((song) =>
@@ -179,14 +175,16 @@ export default function Page() {
               ))}
           </Box>
         </Box>
-        {filteredSongs.length > 0 && userID && userRole && (
+        {filteredSongs.length > 0  && (
         <MediaPlayer 
             songs={filteredSongs} 
             favoriteSongs={favoriteSongs}
+            votes={votes}
+            setVotes={setVotes}
             currentSongIndex={currentSongIndex}
             onSongChange={handleSongChange}
             userID={userID}
-            userRole={userRole}
+            // userRole={userRole}
           />
         )}
       </Dashboard>
