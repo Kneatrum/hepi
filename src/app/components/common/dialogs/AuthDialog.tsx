@@ -156,7 +156,7 @@ export default function AuthDialog({ open, onClose, onSuccess }: AuthDialogProps
   const { setTokens, accessToken } = useSession()
   const router = useRouter()
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
 
   const [activeTab, setActiveTab] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
